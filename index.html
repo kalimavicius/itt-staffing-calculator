@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITU Personalo Skaičiuoklė v4.0 - Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: rgba(255, 255, 255, 0.06);
+            --card-hover: rgba(255, 255, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+            
+            /* Chart Colors - Updated */
+            --min-color: #f97316; /* Orange for min */
+            --max-color: #dc2626; /* Red for max */
+            --current-color: #3b82f6; /* Blue for current */
+            --plan-near-color: #8b5cf6; /* Purple for near future */
+            --plan-july-color: #10b981; /* Green for after July */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            animation: pulse 20s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 12px;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            background: var(--card-hover);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            color: var(--white);
+            font-size: 1.75rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-value.positive { color: var(--success); }
+        .stat-value.negative { color: var(--danger); }
+        .stat-value.warning { color: var(--warning); }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--card-bg);
+            padding: 0.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Calculator Sections */
+        .calculators-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .calculator-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .calculator-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .calculator-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #f87171 100%);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        th {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+            color: var(--text);
+            padding: 0.875rem 0.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.625rem 0.5rem;
+            color: var(--text);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            transition: background 0.2s ease;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .totals-row {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(139, 92, 246, 0.08));
+            font-weight: 700;
+        }
+
+        .totals-row td {
+            padding: 1rem 0.5rem;
+            border-top: 2px solid rgba(59, 130, 246, 0.3);
+            font-size: 0.9rem;
+        }
+
+        /* Inputs */
+        input, select {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            color: var(--white);
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        input[type="number"] {
+            text-align: center;
+        }
+
+        select option {
+            background: var(--dark);
+            color: var(--white);
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        /* Column widths */
+        .col-name { width: 100px; }
+        .col-stations { width: 60px; }
+        .col-shift { width: 70px; }
+        .col-base { width: 60px; text-align: center; }
+        .col-min { width: 70px; }
+        .col-additional { width: 60px; }
+        .col-required { width: 70px; text-align: center; font-weight: 600; }
+        .col-current { width: 70px; }
+        .col-near-future { width: 80px; }
+        .col-after-july { width: 80px; }
+        .col-gap { width: 70px; text-align: center; }
+        .col-gap-percent { width: 60px; text-align: center; }
+        .col-priority { width: 50px; text-align: center; }
+        .col-critical { width: 40px; text-align: center; }
+
+        /* Planning columns styling */
+        .planning-input {
+            background: rgba(34, 197, 94, 0.1) !important;
+            border-color: rgba(34, 197, 94, 0.3) !important;
+        }
+
+        .planning-input:focus {
+            background: rgba(34, 197, 94, 0.15) !important;
+            border-color: var(--success) !important;
+        }
+
+        /* Badges */
+        .priority-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .priority-1 {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .priority-2 {
+            background: rgba(251, 146, 60, 0.2);
+            color: #fb923c;
+            border: 1px solid rgba(251, 146, 60, 0.3);
+        }
+
+        .priority-3 {
+            background: rgba(250, 204, 21, 0.2);
+            color: #facc15;
+            border: 1px solid rgba(250, 204, 21, 0.3);
+        }
+
+        .gap-badge {
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .gap-shortage {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .gap-surplus {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .chart-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: var(--white);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 0.5rem;
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box h4 {
+            color: #60a5fa;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box ul {
+            color: #cbd5e1;
+            margin-left: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .info-box li {
+            margin: 0.75rem 0;
+            font-size: 0.9rem;
+        }
+
+        /* Export Section */
+        .export-section {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            max-width: 350px;
+            animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(100px) scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .toast.info {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
+        }
+
+        .toast.warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #fb923c 100%);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, var(--danger) 0%, #f87171 100%);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                width: 100%;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .calculator-actions, .export-section, .quick-actions, .tabs {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>ITU Personalo Skaičiuoklė <span class="version-badge">v4.0</span></h1>
+            <p class="subtitle">Intensyviosios terapijos skyrių personalo planavimas pagal LR SAM įsakymą Nr. V-465</p>
+        </div>
+
+        <!-- Dashboard Overview -->
+        <div class="dashboard">
+            <div class="stat-card">
+                <div class="stat-icon">🏥</div>
+                <div class="stat-label">Iš viso skyrių</div>
+                <div class="stat-value" id="totalUnits">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-label">Iš viso postų</div>
+                <div class="stat-value" id="totalStations">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-label">Reikalingi etatai</div>
+                <div class="stat-value" id="totalRequired">0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-label">Dabartiniai etatai</div>
+                <div class="stat-value" id="totalCurrent">0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-label">Planas: Artimu metu</div>
+                <div class="stat-value positive" id="totalNearFuture">0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎓</div>
+                <div class="stat-label">Planas: Po liepos</div>
+                <div class="stat-value positive" id="totalAfterJuly">0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚖️</div>
+                <div class="stat-label">Dabartinis balansas</div>
+                <div class="stat-value" id="totalBalance">0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-label">Skyriai su trūkumu</div>
+                <div class="stat-value warning" id="shortageUnits">0</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('calculators')">📊 Skaičiuoklės</button>
+            <button class="tab" onclick="switchTab('planning')">📈 Planavimo grafikai</button>
+            <button class="tab" onclick="switchTab('help')">ℹ️ Pagalba</button>
+        </div>
+
+        <!-- Calculators Tab -->
+        <div id="calculators-tab" class="tab-content active">
+            <div class="calculators-grid">
+                <!-- Main ICU Units Calculator -->
+                <div class="calculator-section">
+                    <div class="calculator-header">
+                        <div class="calculator-title">
+                            <span style="font-size: 1.5rem;">🏥</span> 
+                            Pagrindiniai ITS skyriai
+                        </div>
+                        <div class="calculator-actions">
+                            <button class="btn btn-sm btn-success" onclick="addMainUnit()" title="Pridėti skyrių">➕</button>
+                            <button class="btn btn-sm btn-danger" onclick="removeMainUnit()" title="Pašalinti skyrių">➖</button>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <button class="btn btn-sm btn-secondary" onclick="resetMainToDefaults()">🔄 Atkurti</button>
+                        <button class="btn btn-sm btn-secondary" onclick="clearMainAdditional()">🧹 Valyti papild.</button>
+                        <button class="btn btn-sm btn-secondary" onclick="autoConfigureMain()">🤖 Auto konfig.</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Skyrius</th>
+                                    <th>Postai</th>
+                                    <th>Pamaina</th>
+                                    <th class="tooltip" data-tooltip="Baziniai FTE vienam postui">Bazė</th>
+                                    <th class="tooltip" data-tooltip="Papildomi FTE">Papild.</th>
+                                    <th>Reikia</th>
+                                    <th>Turimi</th>
+                                    <th class="tooltip" data-tooltip="FTE po darbuotojų krūvio pakeitimų (planavimui)">Artimu metu</th>
+                                    <th class="tooltip" data-tooltip="FTE kai rezidentai taps gydytojais (planavimui)">Po liepos</th>
+                                    <th class="tooltip" data-tooltip="Skirtumas tarp turimų ir reikalingų">Skirtumas</th>
+                                    <th class="tooltip" data-tooltip="Procentinis skirtumas">Gap %</th>
+                                    <th>#</th>
+                                    <th class="tooltip" data-tooltip="Kritinis skyrius">⚠</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mainUnitsBody">
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td>VISO:</td>
+                                    <td id="mainTotalStations">0</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td id="mainTotalAdditional">0.00</td>
+                                    <td id="mainTotalRequired">0.00</td>
+                                    <td id="mainTotalCurrent">0.00</td>
+                                    <td id="mainTotalNearFuture">0.00</td>
+                                    <td id="mainTotalAfterJuly">0.00</td>
+                                    <td id="mainTotalGap">0.00</td>
+                                    <td id="mainTotalGapPercent">0%</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Specialized Units Calculator -->
+                <div class="calculator-section">
+                    <div class="calculator-header">
+                        <div class="calculator-title">
+                            <span style="font-size: 1.5rem;">🏢</span>
+                            Specializuoti skyriai
+                        </div>
+                        <div class="calculator-actions">
+                            <button class="btn btn-sm btn-success" onclick="addSpecUnit()" title="Pridėti skyrių">➕</button>
+                            <button class="btn btn-sm btn-danger" onclick="removeSpecUnit()" title="Pašalinti skyrių">➖</button>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <button class="btn btn-sm btn-secondary" onclick="resetSpecToDefaults()">🔄 Atkurti</button>
+                        <button class="btn btn-sm btn-secondary" onclick="clearSpecAdditional()">🧹 Valyti papild.</button>
+                        <button class="btn btn-sm btn-secondary" onclick="autoConfigureSpec()">🤖 Auto konfig.</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Skyrius</th>
+                                    <th>Postai</th>
+                                    <th>Pamaina</th>
+                                    <th class="tooltip" data-tooltip="Baziniai FTE vienam postui">Bazė</th>
+                                    <th class="tooltip" data-tooltip="Papildomi FTE">Papild.</th>
+                                    <th>Reikia</th>
+                                    <th>Turimi</th>
+                                    <th class="tooltip" data-tooltip="FTE po darbuotojų krūvio pakeitimų (planavimui)">Artimu metu</th>
+                                    <th class="tooltip" data-tooltip="FTE kai rezidentai taps gydytojais (planavimui)">Po liepos</th>
+                                    <th class="tooltip" data-tooltip="Skirtumas tarp turimų ir reikalingų">Skirtumas</th>
+                                    <th class="tooltip" data-tooltip="Procentinis skirtumas">Gap %</th>
+                                    <th>#</th>
+                                    <th class="tooltip" data-tooltip="Kritinis skyrius">⚠</th>
+                                </tr>
+                            </thead>
+                            <tbody id="specUnitsBody">
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td>VISO:</td>
+                                    <td id="specTotalStations">0</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td id="specTotalAdditional">0.00</td>
+                                    <td id="specTotalRequired">0.00</td>
+                                    <td id="specTotalCurrent">0.00</td>
+                                    <td id="specTotalNearFuture">0.00</td>
+                                    <td id="specTotalAfterJuly">0.00</td>
+                                    <td id="specTotalGap">0.00</td>
+                                    <td id="specTotalGapPercent">0%</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Planning Charts Tab -->
+        <div id="planning-tab" class="tab-content">
+            <div class="charts-grid">
+                <!-- Main Departments Chart -->
+                <div class="chart-section">
+                    <h2 style="color: var(--white); font-size: 1.3rem; margin-bottom: 1rem;">📊 Pagrindiniai ITS skyriai - Santykinis FTE</h2>
+                    
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #3b82f6;"></div>
+                            <span>Turimi</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #8b5cf6;"></div>
+                            <span>Artimu metu</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #10b981;"></div>
+                            <span>Po liepos</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #f97316;"></div>
+                            <span>Min. riba</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #dc2626;"></div>
+                            <span>Maks. riba</span>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="mainDeptChart" width="600" height="400"></canvas>
+                    </div>
+
+                    <div class="info-box" style="margin-top: 1rem;">
+                        <h4>📊 Santykinio grafiko paaiškinimas</h4>
+                        <ul>
+                            <li>Grafikas rodo FTE santykį su min/maks ribomis</li>
+                            <li>Baseline nustatomas dinamiškai pagal mažiausią skyrių ± 2 FTE</li>
+                            <li>Oranžinė linija = minimalus reikalingas FTE</li>
+                            <li>Raudona linija = maksimalus reikalingas FTE</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Specialized Departments Chart -->
+                <div class="chart-section">
+                    <h2 style="color: var(--white); font-size: 1.3rem; margin-bottom: 1rem;">📊 Specializuoti skyriai - Gap analizė</h2>
+                    
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #3b82f6;"></div>
+                            <span>Turimi</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #8b5cf6;"></div>
+                            <span>Artimu metu</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #10b981;"></div>
+                            <span>Po liepos</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #f97316;"></div>
+                            <span>Min. riba</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #dc2626;"></div>
+                            <span>Maks. riba</span>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="specDeptChart" width="600" height="400"></canvas>
+                    </div>
+
+                    <div class="info-box" style="margin-top: 1rem;">
+                        <h4>📊 Gap analizės grafiko paaiškinimas</h4>
+                        <ul>
+                            <li>Grafikas akcentuoja skirtumus tarp turimų ir reikalingų FTE</li>
+                            <li>Vizualizacija pritaikyta mažesniems skyriams</li>
+                            <li>Spalvos padeda identifikuoti kritines sritis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Tab -->
+        <div id="help-tab" class="tab-content">
+            <div class="info-box">
+                <h4>📐 Skaičiavimo metodika</h4>
+                <ul>
+                    <li><strong>Bazinis FTE skaičiavimas:</strong> Pamainų valandos × Dienos ÷ 40 val/sav × 1.25 (nebuvimo koef.)</li>
+                    <li><strong>24/7 pamainos:</strong> (24h × 7d) ÷ 40h × 1.25 = 5.25 FTE/postui</li>
+                    <li><strong>12/7 pamainos:</strong> (12h × 7d) ÷ 40h × 1.25 = 2.625 FTE/postui</li>
+                    <li><strong>1 FTE = 40 val/sav</strong> standartinis darbo krūvis</li>
+                </ul>
+            </div>
+
+            <div class="info-box" style="margin-top: 1.5rem;">
+                <h4>📊 Grafikų spalvų sistema (v4.0)</h4>
+                <ul>
+                    <li><strong>Oranžinė linija:</strong> Minimalus reikalingas FTE (bazė)</li>
+                    <li><strong>Raudona linija:</strong> Maksimalus reikalingas FTE (su papildomais)</li>
+                    <li><strong>Mėlyni stulpeliai:</strong> Dabartiniai FTE</li>
+                    <li><strong>Violetiniai stulpeliai:</strong> Planuojami FTE artimu metu</li>
+                    <li><strong>Žali stulpeliai:</strong> Planuojami FTE po liepos</li>
+                </ul>
+            </div>
+
+            <div class="info-box" style="margin-top: 1.5rem;">
+                <h4>📈 Grafikų tipai</h4>
+                <ul>
+                    <li><strong>Pagrindinių skyrių grafikas:</strong> Rodo santykinius FTE nuo dinaminio baseline, geriau matosi proporcijos</li>
+                    <li><strong>Specializuotų skyrių grafikas:</strong> Fokusas į gap analizę, rodo skirtumus tarp turimų ir reikalingų FTE</li>
+                    <li><strong>Baseline skaičiavimas:</strong> Mažiausias skyriaus FTE ± 2, kad būtų geriau matomi skirtumai</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="export-section">
+            <button class="btn" onclick="exportToCSV()">📊 Eksportuoti CSV</button>
+            <button class="btn btn-secondary" onclick="exportPlanningReport()">📋 Planavimo ataskaita</button>
+            <button class="btn btn-secondary" onclick="saveConfiguration()">💾 Išsaugoti konfigūraciją</button>
+            <button class="btn btn-secondary" onclick="loadConfiguration()">📂 Įkelti konfigūraciją</button>
+            <button class="btn btn-secondary" onclick="printReport()">🖨️ Spausdinti</button>
+        </div>
+    </div>
+
+    <script>
+        // Constants
+        const STANDARD_FTE = {
+            '24/7': 5.25,
+            '12/7': 2.625,
+            '12/6': 2.25,
+            '12/5': 1.875,
+            '10/6': 1.875,
+            '8/5': 1.25
+        };
+
+        // State
+        let mainUnits = [
+            { 
+                name: 'I ITS', 
+                stations: 3, 
+                shiftType: '24/7', 
+                additionalFTE: 1, 
+                currentFTE: 18, 
+                nearFutureFTE: 18.5,
+                afterJulyFTE: 20,
+                isCritical: false 
+            },
+            { 
+                name: 'II ITS', 
+                stations: 3, 
+                shiftType: '24/7', 
+                additionalFTE: 1, 
+                currentFTE: 15.125,
+                nearFutureFTE: 16,
+                afterJulyFTE: 17.5,
+                isCritical: false 
+            },
+            { 
+                name: 'III ITS', 
+                stations: 2, 
+                shiftType: '24/7', 
+                additionalFTE: 0.75, 
+                currentFTE: 11.75,
+                nearFutureFTE: 11.75,
+                afterJulyFTE: 12.5,
+                isCritical: false 
+            },
+            { 
+                name: 'IV ITS', 
+                stations: 1, 
+                shiftType: '24/7', 
+                additionalFTE: 0.25, 
+                currentFTE: 5.5,
+                nearFutureFTE: 5.5,
+                afterJulyFTE: 6,
+                isCritical: false 
+            }
+        ];
+
+        let specUnits = [
+            { 
+                name: 'PTP', 
+                stations: 1, 
+                shiftType: '12/6', 
+                additionalFTE: 0.25, 
+                currentFTE: 3,
+                nearFutureFTE: 3,
+                afterJulyFTE: 3.5,
+                isCritical: false 
+            },
+            { 
+                name: 'RDPKP', 
+                stations: 1, 
+                shiftType: '12/6', 
+                additionalFTE: 0, 
+                currentFTE: 2,
+                nearFutureFTE: 2.25,
+                afterJulyFTE: 2.5,
+                isCritical: false 
+            }
+        ];
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'planning') {
+                setTimeout(() => {
+                    drawMainDeptChart();
+                    drawSpecDeptChart();
+                }, 100);
+            }
+        }
+
+        // Auto configure
+        function autoConfigureMain() {
+            mainUnits.forEach(unit => {
+                unit.additionalFTE = Math.max(0, Math.floor(unit.stations * 0.33 * 4) / 4);
+            });
+            updateAll();
+            showToast('Pagrindiniams skyriams pritaikyta išmani konfigūracija', 'success');
+        }
+
+        function autoConfigureSpec() {
+            specUnits.forEach(unit => {
+                unit.additionalFTE = unit.stations > 2 ? 0.5 : 0.25;
+            });
+            updateAll();
+            showToast('Specializuotiems skyriams pritaikyta išmani konfigūracija', 'success');
+        }
+
+        // Calculate functions
+        function calculateUnit(unit) {
+            const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
+            unit.baseRequired = unit.stations * baseFTEPerStation;
+            unit.totalRequired = unit.baseRequired + (unit.additionalFTE || 0);
+            
+            unit.gap = unit.currentFTE - unit.totalRequired;
+            unit.gapPercentage = unit.totalRequired > 0 ? (unit.gap / unit.totalRequired) * 100 : 0;
+            
+            const weightFactor = unit.isCritical ? 1.5 : 1.0;
+            unit.priorityScore = Math.abs(unit.gapPercentage) * weightFactor;
+            
+            unit.nearFutureGap = (unit.nearFutureFTE || unit.currentFTE) - unit.totalRequired;
+            unit.afterJulyGap = (unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) - unit.totalRequired;
+            
+            return unit;
+        }
+
+        function renderUnits(units, bodyId, prefix) {
+            const tbody = document.getElementById(bodyId);
+            tbody.innerHTML = '';
+            
+            let totalStations = 0;
+            let totalAdditional = 0;
+            let totalRequired = 0;
+            let totalCurrent = 0;
+            let totalNearFuture = 0;
+            let totalAfterJuly = 0;
+            
+            units.forEach(unit => calculateUnit(unit));
+            
+            const unitsWithShortages = units.filter(u => u.gap < 0);
+            units.forEach(unit => unit.priority = null);
+            
+            if (unitsWithShortages.length > 0) {
+                const sortedShortages = [...unitsWithShortages].sort((a, b) => b.priorityScore - a.priorityScore);
+                sortedShortages.forEach((sortedUnit, index) => {
+                    const originalUnit = units.find(u => u === sortedUnit);
+                    if (originalUnit) originalUnit.priority = index + 1;
+                });
+            }
+            
+            units.forEach((unit, index) => {
+                const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
+                const isShortage = unit.gap < 0;
+                
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td class="col-name">
+                        <input type="text" value="${unit.name}" onchange="updateUnit('${prefix}', ${index}, 'name', this.value)">
+                    </td>
+                    <td class="col-stations">
+                        <input type="number" value="${unit.stations}" min="0" onchange="updateUnit('${prefix}', ${index}, 'stations', this.value)">
+                    </td>
+                    <td class="col-shift">
+                        <select onchange="updateUnit('${prefix}', ${index}, 'shiftType', this.value)">
+                            ${Object.keys(STANDARD_FTE).map(pattern => 
+                                `<option value="${pattern}" ${unit.shiftType === pattern ? 'selected' : ''}>${pattern}</option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td class="col-base" style="color: #60a5fa;">${baseFTEPerStation}</td>
+                    <td class="col-additional">
+                        <input type="number" value="${unit.additionalFTE}" step="0.25" min="0"
+                               onchange="updateUnit('${prefix}', ${index}, 'additionalFTE', this.value)">
+                    </td>
+                    <td class="col-required" style="color: #fbbf24;">${unit.totalRequired.toFixed(2)}</td>
+                    <td class="col-current">
+                        <input type="number" value="${unit.currentFTE}" step="0.125" min="0"
+                               onchange="updateUnit('${prefix}', ${index}, 'currentFTE', this.value)">
+                    </td>
+                    <td class="col-near-future">
+                        <input type="number" value="${unit.nearFutureFTE || unit.currentFTE}" step="0.125" min="0"
+                               class="planning-input"
+                               onchange="updateUnit('${prefix}', ${index}, 'nearFutureFTE', this.value)">
+                    </td>
+                    <td class="col-after-july">
+                        <input type="number" value="${unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE}" step="0.125" min="0"
+                               class="planning-input"
+                               onchange="updateUnit('${prefix}', ${index}, 'afterJulyFTE', this.value)">
+                    </td>
+                    <td class="col-gap">
+                        <span class="gap-badge ${isShortage ? 'gap-shortage' : 'gap-surplus'}">
+                            ${unit.gap >= 0 ? '+' : ''}${unit.gap.toFixed(2)}
+                        </span>
+                    </td>
+                    <td class="col-gap-percent" style="font-weight: 600; color: ${isShortage ? '#f87171' : '#4ade80'};">
+                        ${unit.gapPercentage >= 0 ? '+' : ''}${unit.gapPercentage.toFixed(1)}%
+                    </td>
+                    <td class="col-priority">
+                        ${unit.priority ? 
+                            `<span class="priority-badge priority-${Math.min(unit.priority, 3)}">#${unit.priority}</span>` : 
+                            '-'}
+                    </td>
+                    <td class="col-critical">
+                        <input type="checkbox" ${unit.isCritical ? 'checked' : ''} 
+                               onchange="updateUnit('${prefix}', ${index}, 'isCritical', this.checked)">
+                    </td>
+                `;
+                
+                totalStations += unit.stations;
+                totalAdditional += unit.additionalFTE || 0;
+                totalRequired += unit.totalRequired;
+                totalCurrent += unit.currentFTE;
+                totalNearFuture += unit.nearFutureFTE || unit.currentFTE;
+                totalAfterJuly += unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE;
+            });
+            
+            const totalGap = totalCurrent - totalRequired;
+            const totalGapPercent = totalRequired > 0 ? (totalGap / totalRequired) * 100 : 0;
+            
+            document.getElementById(`${prefix}TotalStations`).textContent = totalStations;
+            document.getElementById(`${prefix}TotalAdditional`).textContent = totalAdditional.toFixed(2);
+            document.getElementById(`${prefix}TotalRequired`).textContent = totalRequired.toFixed(2);
+            document.getElementById(`${prefix}TotalCurrent`).textContent = totalCurrent.toFixed(2);
+            document.getElementById(`${prefix}TotalNearFuture`).textContent = totalNearFuture.toFixed(2);
+            document.getElementById(`${prefix}TotalAfterJuly`).textContent = totalAfterJuly.toFixed(2);
+            
+            const gapEl = document.getElementById(`${prefix}TotalGap`);
+            gapEl.textContent = (totalGap >= 0 ? '+' : '') + totalGap.toFixed(2);
+            gapEl.style.color = totalGap < 0 ? '#f87171' : '#4ade80';
+            
+            const gapPercentEl = document.getElementById(`${prefix}TotalGapPercent`);
+            gapPercentEl.textContent = (totalGapPercent >= 0 ? '+' : '') + totalGapPercent.toFixed(1) + '%';
+            gapPercentEl.style.color = totalGap < 0 ? '#f87171' : '#4ade80';
+        }
+
+        function updateDashboard() {
+            const allUnits = [...mainUnits, ...specUnits];
+            
+            let totalStations = 0;
+            let totalRequired = 0;
+            let totalCurrent = 0;
+            let totalNearFuture = 0;
+            let totalAfterJuly = 0;
+            let shortageCount = 0;
+            
+            allUnits.forEach(unit => {
+                calculateUnit(unit);
+                totalStations += unit.stations;
+                totalRequired += unit.totalRequired;
+                totalCurrent += unit.currentFTE;
+                totalNearFuture += unit.nearFutureFTE || unit.currentFTE;
+                totalAfterJuly += unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE;
+                
+                if (unit.gap < 0) shortageCount++;
+            });
+            
+            const currentGap = totalCurrent - totalRequired;
+            
+            document.getElementById('totalUnits').textContent = allUnits.length;
+            document.getElementById('totalStations').textContent = totalStations;
+            document.getElementById('totalRequired').textContent = totalRequired.toFixed(2);
+            document.getElementById('totalCurrent').textContent = totalCurrent.toFixed(2);
+            document.getElementById('totalNearFuture').textContent = totalNearFuture.toFixed(2);
+            document.getElementById('totalAfterJuly').textContent = totalAfterJuly.toFixed(2);
+            document.getElementById('shortageUnits').textContent = shortageCount;
+            
+            const balanceEl = document.getElementById('totalBalance');
+            balanceEl.textContent = (currentGap >= 0 ? '+' : '') + currentGap.toFixed(2);
+            balanceEl.className = currentGap < 0 ? 'stat-value negative' : 'stat-value positive';
+        }
+
+        // Enhanced Chart Drawing Functions
+        function drawMainDeptChart() {
+            const canvas = document.getElementById('mainDeptChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 600;
+            const height = canvas.height = 400;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            // Calculate baseline (smallest department FTE or 8, whichever is appropriate)
+            let minFTE = Math.min(...mainUnits.map(u => Math.min(
+                u.baseRequired,
+                u.currentFTE,
+                u.nearFutureFTE || u.currentFTE,
+                u.afterJulyFTE || u.currentFTE
+            )));
+            
+            // Set baseline with ±2 FTE margin for better visualization
+            const baseline = Math.max(0, minFTE - 2);
+            
+            // Chart dimensions
+            const padding = { top: 40, right: 60, bottom: 60, left: 80 };
+            const chartWidth = width - padding.left - padding.right;
+            const chartHeight = height - padding.top - padding.bottom;
+            
+            // Calculate max value for scale (relative to baseline)
+            let maxValue = 0;
+            mainUnits.forEach(unit => {
+                const max = Math.max(
+                    unit.totalRequired,
+                    unit.currentFTE,
+                    unit.nearFutureFTE || 0,
+                    unit.afterJulyFTE || 0
+                );
+                if (max - baseline > maxValue) maxValue = max - baseline;
+            });
+            maxValue = maxValue * 1.1;
+            
+            // Draw grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i <= 5; i++) {
+                const y = padding.top + (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding.left, y);
+                ctx.lineTo(width - padding.right, y);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '11px sans-serif';
+                ctx.textAlign = 'right';
+                const value = baseline + maxValue - (maxValue / 5) * i;
+                ctx.fillText(value.toFixed(1), padding.left - 10, y + 4);
+            }
+            
+            // Bar dimensions
+            const groupWidth = chartWidth / mainUnits.length;
+            const barWidth = groupWidth / 4;
+            const barSpacing = barWidth * 0.3;
+            
+            // Draw units
+            mainUnits.forEach((unit, index) => {
+                const x = padding.left + groupWidth * index + groupWidth / 2;
+                
+                // Calculate heights (relative to baseline)
+                const currentHeight = ((unit.currentFTE - baseline) / maxValue) * chartHeight;
+                const nearFutureHeight = (((unit.nearFutureFTE || unit.currentFTE) - baseline) / maxValue) * chartHeight;
+                const afterJulyHeight = (((unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) - baseline) / maxValue) * chartHeight;
+                
+                // Draw bars
+                const bars = [
+                    { height: currentHeight, color: '#3b82f6', label: 'Dabartiniai' },
+                    { height: nearFutureHeight, color: '#8b5cf6', label: 'Artimu metu' },
+                    { height: afterJulyHeight, color: '#10b981', label: 'Po liepos' }
+                ];
+                
+                bars.forEach((bar, barIndex) => {
+                    if (bar.height > 0) {
+                        const barX = x - barWidth * 1.5 + barIndex * (barWidth + barSpacing);
+                        const barY = padding.top + chartHeight - bar.height;
+                        
+                        const gradient = ctx.createLinearGradient(0, barY, 0, barY + bar.height);
+                        gradient.addColorStop(0, bar.color);
+                        gradient.addColorStop(1, bar.color + '99');
+                        
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(barX, barY, barWidth, bar.height);
+                        
+                        ctx.strokeStyle = bar.color;
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(barX, barY, barWidth, bar.height);
+                    }
+                });
+                
+                // Draw threshold lines (orange for min, red for max)
+                const minRequired = ((unit.baseRequired - baseline) / maxValue) * chartHeight;
+                const maxRequired = ((unit.totalRequired - baseline) / maxValue) * chartHeight;
+                
+                // Min threshold (orange)
+                ctx.strokeStyle = '#f97316';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - minRequired);
+                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - minRequired);
+                ctx.stroke();
+                
+                // Max threshold (red)
+                ctx.strokeStyle = '#dc2626';
+                ctx.beginPath();
+                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - maxRequired);
+                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - maxRequired);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Unit name
+                ctx.fillStyle = '#e2e8f0';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(unit.name, x, height - 30);
+                
+                // Station count
+                ctx.fillStyle = '#64748b';
+                ctx.font = '10px sans-serif';
+                ctx.fillText(`${unit.stations} ${unit.stations === 1 ? 'postas' : 'postai'}`, x, height - 15);
+                
+                // Gap indicator
+                if (unit.gap < 0) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.fillText(`${unit.gap.toFixed(1)}`, x, height - 45);
+                }
+            });
+            
+            // Title
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Santykinis FTE (baseline: ${baseline.toFixed(1)})`, width / 2, 25);
+            
+            // Y-axis label
+            ctx.save();
+            ctx.translate(20, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.font = '12px sans-serif';
+            ctx.fillStyle = '#94a3b8';
+            ctx.textAlign = 'center';
+            ctx.fillText('FTE (nuo baseline)', 0, 0);
+            ctx.restore();
+        }
+
+        function drawSpecDeptChart() {
+            const canvas = document.getElementById('specDeptChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 600;
+            const height = canvas.height = 400;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            // Chart dimensions
+            const padding = { top: 40, right: 60, bottom: 60, left: 80 };
+            const chartWidth = width - padding.left - padding.right;
+            const chartHeight = height - padding.top - padding.bottom;
+            
+            // Calculate scale for gap visualization
+            let maxAbsGap = 0;
+            let maxFTE = 0;
+            specUnits.forEach(unit => {
+                const absGap = Math.abs(unit.gap);
+                if (absGap > maxAbsGap) maxAbsGap = absGap;
+                
+                const max = Math.max(
+                    unit.totalRequired,
+                    unit.currentFTE,
+                    unit.nearFutureFTE || 0,
+                    unit.afterJulyFTE || 0
+                );
+                if (max > maxFTE) maxFTE = max;
+            });
+            
+            maxFTE = maxFTE * 1.2;
+            
+            // Draw grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i <= 5; i++) {
+                const y = padding.top + (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding.left, y);
+                ctx.lineTo(width - padding.right, y);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '11px sans-serif';
+                ctx.textAlign = 'right';
+                const value = maxFTE - (maxFTE / 5) * i;
+                ctx.fillText(value.toFixed(1), padding.left - 10, y + 4);
+            }
+            
+            // Bar dimensions
+            const groupWidth = chartWidth / specUnits.length;
+            const barWidth = groupWidth / 4;
+            const barSpacing = barWidth * 0.3;
+            
+            // Draw units with gap emphasis
+            specUnits.forEach((unit, index) => {
+                const x = padding.left + groupWidth * index + groupWidth / 2;
+                
+                // Calculate heights
+                const currentHeight = (unit.currentFTE / maxFTE) * chartHeight;
+                const nearFutureHeight = ((unit.nearFutureFTE || unit.currentFTE) / maxFTE) * chartHeight;
+                const afterJulyHeight = ((unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) / maxFTE) * chartHeight;
+                
+                // Draw bars
+                const bars = [
+                    { height: currentHeight, color: '#3b82f6', label: 'Dabartiniai' },
+                    { height: nearFutureHeight, color: '#8b5cf6', label: 'Artimu metu' },
+                    { height: afterJulyHeight, color: '#10b981', label: 'Po liepos' }
+                ];
+                
+                bars.forEach((bar, barIndex) => {
+                    const barX = x - barWidth * 1.5 + barIndex * (barWidth + barSpacing);
+                    const barY = padding.top + chartHeight - bar.height;
+                    
+                    const gradient = ctx.createLinearGradient(0, barY, 0, barY + bar.height);
+                    gradient.addColorStop(0, bar.color);
+                    gradient.addColorStop(1, bar.color + '99');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(barX, barY, barWidth, bar.height);
+                    
+                    ctx.strokeStyle = bar.color;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(barX, barY, barWidth, bar.height);
+                });
+                
+                // Draw requirement zones with gap emphasis
+                const minRequired = (unit.baseRequired / maxFTE) * chartHeight;
+                const maxRequired = (unit.totalRequired / maxFTE) * chartHeight;
+                
+                // Highlight gap area
+                if (unit.gap < 0) {
+                    // Shortage - highlight area between current and required
+                    const gapY = padding.top + chartHeight - maxRequired;
+                    const gapHeight = maxRequired - currentHeight;
+                    
+                    ctx.fillStyle = 'rgba(239, 68, 68, 0.1)';
+                    ctx.fillRect(x - groupWidth * 0.4, gapY, groupWidth * 0.8, gapHeight);
+                }
+                
+                // Min threshold (orange)
+                ctx.strokeStyle = '#f97316';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - minRequired);
+                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - minRequired);
+                ctx.stroke();
+                
+                // Max threshold (red)
+                ctx.strokeStyle = '#dc2626';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - maxRequired);
+                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - maxRequired);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Unit name
+                ctx.fillStyle = '#e2e8f0';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(unit.name, x, height - 30);
+                
+                // Gap value (prominent)
+                ctx.font = 'bold 14px sans-serif';
+                if (unit.gap < 0) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.fillText(`Gap: ${unit.gap.toFixed(1)}`, x, height - 10);
+                } else {
+                    ctx.fillStyle = '#10b981';
+                    ctx.fillText(`+${unit.gap.toFixed(1)}`, x, height - 10);
+                }
+            });
+            
+            // Title
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Gap analizė - Specializuoti skyriai', width / 2, 25);
+            
+            // Y-axis label
+            ctx.save();
+            ctx.translate(20, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.font = '12px sans-serif';
+            ctx.fillStyle = '#94a3b8';
+            ctx.textAlign = 'center';
+            ctx.fillText('FTE', 0, 0);
+            ctx.restore();
+        }
+
+        function updateAll() {
+            renderUnits(mainUnits, 'mainUnitsBody', 'main');
+            renderUnits(specUnits, 'specUnitsBody', 'spec');
+            updateDashboard();
+            
+            if (document.getElementById('planning-tab').classList.contains('active')) {
+                setTimeout(() => {
+                    drawMainDeptChart();
+                    drawSpecDeptChart();
+                }, 100);
+            }
+        }
+
+        // Update unit
+        function updateUnit(prefix, index, field, value) {
+            const units = prefix === 'main' ? mainUnits : specUnits;
+            
+            if (field === 'name') {
+                units[index][field] = value;
+            } else if (field === 'isCritical') {
+                units[index][field] = value;
+            } else if (field === 'shiftType') {
+                units[index][field] = value;
+            } else {
+                units[index][field] = parseFloat(value) || 0;
+            }
+            
+            updateAll();
+        }
+
+        // Add/Remove units
+        function addMainUnit() {
+            const newUnitNumber = mainUnits.length + 1;
+            mainUnits.push({
+                name: newUnitNumber <= 4 ? `${['I', 'II', 'III', 'IV', 'V'][newUnitNumber - 1]} ITS` : `${newUnitNumber} ITS`,
+                stations: 1,
+                shiftType: '24/7',
+                additionalFTE: 0,
+                currentFTE: 0,
+                nearFutureFTE: 0,
+                afterJulyFTE: 0,
+                isCritical: false
+            });
+            updateAll();
+            showToast('✅ Pridėtas naujas pagrindinis skyrius', 'success');
+        }
+
+        function removeMainUnit() {
+            if (mainUnits.length > 1) {
+                mainUnits.pop();
+                updateAll();
+                showToast('ℹ️ Pašalintas pagrindinis skyrius', 'info');
+            } else {
+                showToast('⚠️ Negalima pašalinti paskutinio skyriaus', 'warning');
+            }
+        }
+
+        function addSpecUnit() {
+            specUnits.push({
+                name: 'Spec ' + (specUnits.length + 1),
+                stations: 1,
+                shiftType: '12/6',
+                additionalFTE: 0,
+                currentFTE: 0,
+                nearFutureFTE: 0,
+                afterJulyFTE: 0,
+                isCritical: false
+            });
+            updateAll();
+            showToast('✅ Pridėtas naujas specializuotas skyrius', 'success');
+        }
+
+        function removeSpecUnit() {
+            if (specUnits.length > 0) {
+                specUnits.pop();
+                updateAll();
+                showToast('ℹ️ Pašalintas specializuotas skyrius', 'info');
+            } else {
+                showToast('⚠️ Nėra skyrių pašalinimui', 'warning');
+            }
+        }
+
+        // Reset functions
+        function resetMainToDefaults() {
+            if (!confirm('Atkurti pagrindinių skyrių numatytuosius nustatymus?')) return;
+            
+            mainUnits = [
+                { name: 'I ITS', stations: 3, shiftType: '24/7', additionalFTE: 1, currentFTE: 18, nearFutureFTE: 18.5, afterJulyFTE: 20, isCritical: false },
+                { name: 'II ITS', stations: 3, shiftType: '24/7', additionalFTE: 1, currentFTE: 15.125, nearFutureFTE: 16, afterJulyFTE: 17.5, isCritical: false },
+                { name: 'III ITS', stations: 2, shiftType: '24/7', additionalFTE: 0.75, currentFTE: 11.75, nearFutureFTE: 11.75, afterJulyFTE: 12.5, isCritical: false },
+                { name: 'IV ITS', stations: 1, shiftType: '24/7', additionalFTE: 0.25, currentFTE: 5.5, nearFutureFTE: 5.5, afterJulyFTE: 6, isCritical: false }
+            ];
+            updateAll();
+            showToast('🔄 Atkurti numatytieji nustatymai', 'success');
+        }
+
+        function resetSpecToDefaults() {
+            if (!confirm('Atkurti specializuotų skyrių numatytuosius nustatymus?')) return;
+            
+            specUnits = [
+                { name: 'PTP', stations: 1, shiftType: '12/6', additionalFTE: 0.25, currentFTE: 3, nearFutureFTE: 3, afterJulyFTE: 3.5, isCritical: false },
+                { name: 'RDPKP', stations: 1, shiftType: '12/6', additionalFTE: 0, currentFTE: 2, nearFutureFTE: 2.25, afterJulyFTE: 2.5, isCritical: false }
+            ];
+            updateAll();
+            showToast('🔄 Atkurti numatytieji nustatymai', 'success');
+        }
+
+        function clearMainAdditional() {
+            mainUnits.forEach(unit => unit.additionalFTE = 0);
+            updateAll();
+            showToast('🧹 Išvalyti papildomi FTE', 'success');
+        }
+
+        function clearSpecAdditional() {
+            specUnits.forEach(unit => unit.additionalFTE = 0);
+            updateAll();
+            showToast('🧹 Išvalyti papildomi FTE', 'success');
+        }
+
+        // Export functions
+        function exportToCSV() {
+            let csv = 'ITU Personalo Ataskaita v4.0\n';
+            csv += `Data: ${new Date().toLocaleString('lt-LT')}\n\n`;
+            
+            csv += 'PAGRINDINIAI ITS SKYRIAI\n';
+            csv += 'Skyrius,Postai,Pamaina,Bazė FTE,Papild.,Reikia,Turimi,Artimu metu,Po liepos,Skirtumas,Gap %,Prioritetas,Kritinis\n';
+            
+            mainUnits.forEach(unit => {
+                const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
+                csv += `${unit.name},${unit.stations},${unit.shiftType},${baseFTEPerStation},`;
+                csv += `${unit.additionalFTE.toFixed(2)},${unit.totalRequired.toFixed(2)},`;
+                csv += `${unit.currentFTE.toFixed(2)},${(unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
+                csv += `${(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
+                csv += `${unit.gap.toFixed(2)},${unit.gapPercentage.toFixed(1)}%,`;
+                csv += `${unit.priority || '-'},${unit.isCritical ? 'Taip' : 'Ne'}\n`;
+            });
+            
+            csv += '\nSPECIALIZUOTI SKYRIAI\n';
+            csv += 'Skyrius,Postai,Pamaina,Bazė FTE,Papild.,Reikia,Turimi,Artimu metu,Po liepos,Skirtumas,Gap %,Prioritetas,Kritinis\n';
+            
+            specUnits.forEach(unit => {
+                const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
+                csv += `${unit.name},${unit.stations},${unit.shiftType},${baseFTEPerStation},`;
+                csv += `${unit.additionalFTE.toFixed(2)},${unit.totalRequired.toFixed(2)},`;
+                csv += `${unit.currentFTE.toFixed(2)},${(unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
+                csv += `${(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
+                csv += `${unit.gap.toFixed(2)},${unit.gapPercentage.toFixed(1)}%,`;
+                csv += `${unit.priority || '-'},${unit.isCritical ? 'Taip' : 'Ne'}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ITU_personalo_planas_v4_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('📊 CSV ataskaita eksportuota', 'success');
+        }
+
+        function exportPlanningReport() {
+            let report = `ITU PERSONALO PLANAVIMO ATASKAITA v4.0\n`;
+            report += `Sugeneruota: ${new Date().toLocaleString('lt-LT')}\n`;
+            report += `${'='.repeat(60)}\n\n`;
+            
+            const allUnits = [...mainUnits, ...specUnits];
+            
+            report += `PLANAVIMO SUVESTINĖ\n`;
+            report += `${'-'.repeat(40)}\n\n`;
+            
+            allUnits.forEach((unit, index) => {
+                report += `${index + 1}. ${unit.name}\n`;
+                report += `   Postai: ${unit.stations}\n`;
+                report += `   Reikalingi FTE: ${unit.totalRequired.toFixed(2)}\n`;
+                report += `   Dabartiniai FTE: ${unit.currentFTE.toFixed(2)}\n`;
+                report += `   Dabartinis skirtumas: ${unit.gap.toFixed(2)} (${unit.gapPercentage.toFixed(1)}%)\n`;
+                report += `   --- Planavimas ---\n`;
+                report += `   Artimu metu FTE: ${(unit.nearFutureFTE || unit.currentFTE).toFixed(2)}\n`;
+                report += `   Po liepos FTE: ${(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE).toFixed(2)}\n`;
+                report += `   Planuojamas skirtumas po liepos: ${unit.afterJulyGap.toFixed(2)}\n\n`;
+            });
+            
+            const blob = new Blob([report], { type: 'text/plain;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `planavimo_ataskaita_v4_${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('📋 Planavimo ataskaita eksportuota', 'success');
+        }
+
+        function saveConfiguration() {
+            const config = {
+                version: '4.0',
+                mainUnits: mainUnits,
+                specUnits: specUnits
+            };
+            
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ITU_config_v4_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('💾 Konfigūracija išsaugota', 'success');
+        }
+
+        function loadConfiguration() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const config = JSON.parse(event.target.result);
+                        
+                        if (config.mainUnits) {
+                            mainUnits = config.mainUnits;
+                        }
+                        
+                        if (config.specUnits) {
+                            specUnits = config.specUnits;
+                        }
+                        
+                        updateAll();
+                        showToast('📂 Konfigūracija įkelta', 'success');
+                    } catch (error) {
+                        showToast('❌ Klaida įkeliant konfigūraciją', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function printReport() {
+            window.print();
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = {
+                'info': 'ℹ️',
+                'success': '✅',
+                'warning': '⚠️',
+                'error': '❌'
+            }[type] || 'ℹ️';
+            
+            toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(100px) scale(0.9)';
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAll();
+            showToast('🚀 ITU Personalo Skaičiuoklė v4.0 paruošta', 'info');
+        });
+
+        // Also run immediately if DOM is already loaded
+        if (document.readyState !== 'loading') {
+            updateAll();
+        }
+    </script>
+</body>
+</html>
