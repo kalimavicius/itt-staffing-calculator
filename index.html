@@ -906,16 +906,16 @@
                     
                     <div class="chart-legend">
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #3b82f6;"></div>
-                            <span>Turimi</span>
+                            <div class="legend-color" style="background: #3b82f6; box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);"></div>
+                            <span style="font-weight: 600;">Turimi (dabartiniai)</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #8b5cf6;"></div>
-                            <span>Artimu metu</span>
+                            <div class="legend-color" style="background: rgba(148, 163, 184, 0.4);"></div>
+                            <span style="opacity: 0.7;">Artimu metu (planas)</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #10b981;"></div>
-                            <span>Po liepos</span>
+                            <div class="legend-color" style="background: rgba(148, 163, 184, 0.3);"></div>
+                            <span style="opacity: 0.6;">Po liepos (planas)</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color" style="background: #f97316;"></div>
@@ -948,16 +948,16 @@
                     
                     <div class="chart-legend">
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #3b82f6;"></div>
-                            <span>Turimi</span>
+                            <div class="legend-color" style="background: #3b82f6; box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);"></div>
+                            <span style="font-weight: 600;">Turimi (dabartiniai)</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #8b5cf6;"></div>
-                            <span>Artimu metu</span>
+                            <div class="legend-color" style="background: rgba(148, 163, 184, 0.4);"></div>
+                            <span style="opacity: 0.7;">Artimu metu (planas)</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #10b981;"></div>
-                            <span>Po liepos</span>
+                            <div class="legend-color" style="background: rgba(148, 163, 184, 0.3);"></div>
+                            <span style="opacity: 0.6;">Po liepos (planas)</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color" style="background: #f97316;"></div>
@@ -998,13 +998,13 @@
             </div>
 
             <div class="info-box" style="margin-top: 1.5rem;">
-                <h4>📊 Grafikų spalvų sistema (v4.0)</h4>
+                <h4>📊 Grafikų spalvų sistema (v4.0) - TURIMI fokusas</h4>
                 <ul>
-                    <li><strong>Oranžinė linija:</strong> Minimalus reikalingas FTE (bazė)</li>
-                    <li><strong>Raudona linija:</strong> Maksimalus reikalingas FTE (su papildomais)</li>
-                    <li><strong>Mėlyni stulpeliai:</strong> Dabartiniai FTE</li>
-                    <li><strong>Violetiniai stulpeliai:</strong> Planuojami FTE artimu metu</li>
-                    <li><strong>Žali stulpeliai:</strong> Planuojami FTE po liepos</li>
+                    <li><strong style="color: #3b82f6;">Mėlyni stulpeliai (ryškūs):</strong> TURIMI - dabartiniai FTE (pagrindinis fokusas)</li>
+                    <li><strong style="color: #94a3b8;">Pilki stulpeliai (prislopinti):</strong> Planuojami FTE artimu metu ir po liepos (tik orientaciniai)</li>
+                    <li><strong style="color: #f97316;">Oranžinė linija:</strong> Minimalus reikalingas FTE (bazė)</li>
+                    <li><strong style="color: #dc2626;">Raudona linija:</strong> Maksimalus reikalingas FTE (su papildomais)</li>
+                    <li>⚠️ <strong>Svarbu:</strong> Grafikas vizualiai pabrėžia dabartinę situaciją (TURIMI), o planuojami rodikliai rodomi prislopintai</li>
                 </ul>
             </div>
 
@@ -1379,11 +1379,11 @@
                 const nearFutureHeight = (((unit.nearFutureFTE || unit.currentFTE) - baseline) / maxValue) * chartHeight;
                 const afterJulyHeight = (((unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) - baseline) / maxValue) * chartHeight;
                 
-                // Draw bars
+                // Draw bars with emphasis on TURIMI (current)
                 const bars = [
-                    { height: currentHeight, color: '#3b82f6', label: 'Dabartiniai' },
-                    { height: nearFutureHeight, color: '#8b5cf6', label: 'Artimu metu' },
-                    { height: afterJulyHeight, color: '#10b981', label: 'Po liepos' }
+                    { height: currentHeight, color: '#3b82f6', alpha: 1, lineWidth: 2.5, label: 'Turimi' },  // Strong blue for current
+                    { height: nearFutureHeight, color: '#94a3b8', alpha: 0.4, lineWidth: 1, label: 'Artimu metu' },  // Muted gray
+                    { height: afterJulyHeight, color: '#94a3b8', alpha: 0.3, lineWidth: 1, label: 'Po liepos' }  // Even more muted
                 ];
                 
                 bars.forEach((bar, barIndex) => {
@@ -1391,16 +1391,32 @@
                         const barX = x - barWidth * 1.5 + barIndex * (barWidth + barSpacing);
                         const barY = padding.top + chartHeight - bar.height;
                         
-                        const gradient = ctx.createLinearGradient(0, barY, 0, barY + bar.height);
-                        gradient.addColorStop(0, bar.color);
-                        gradient.addColorStop(1, bar.color + '99');
+                        // Different styling for current vs planned
+                        if (barIndex === 0) {
+                            // TURIMI - Strong, vibrant gradient
+                            const gradient = ctx.createLinearGradient(0, barY, 0, barY + bar.height);
+                            gradient.addColorStop(0, bar.color);
+                            gradient.addColorStop(1, '#2563eb');  // Darker blue at bottom
+                            ctx.fillStyle = gradient;
+                        } else {
+                            // Planned - Flat, muted color
+                            ctx.fillStyle = `rgba(148, 163, 184, ${bar.alpha})`;  // Gray with transparency
+                        }
                         
-                        ctx.fillStyle = gradient;
                         ctx.fillRect(barX, barY, barWidth, bar.height);
                         
-                        ctx.strokeStyle = bar.color;
-                        ctx.lineWidth = 2;
+                        // Border - stronger for current
+                        ctx.strokeStyle = barIndex === 0 ? bar.color : 'rgba(148, 163, 184, 0.3)';
+                        ctx.lineWidth = bar.lineWidth;
                         ctx.strokeRect(barX, barY, barWidth, bar.height);
+                        
+                        // Display value on top of TURIMI bar
+                        if (barIndex === 0) {
+                            ctx.fillStyle = '#3b82f6';
+                            ctx.font = 'bold 11px sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(unit.currentFTE.toFixed(1), barX + barWidth / 2, barY - 5);
+                        }
                     }
                 });
                 
@@ -1526,27 +1542,43 @@
                 const nearFutureHeight = ((unit.nearFutureFTE || unit.currentFTE) / maxFTE) * chartHeight;
                 const afterJulyHeight = ((unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) / maxFTE) * chartHeight;
                 
-                // Draw bars
+                // Draw bars with emphasis on TURIMI (current)
                 const bars = [
-                    { height: currentHeight, color: '#3b82f6', label: 'Dabartiniai' },
-                    { height: nearFutureHeight, color: '#8b5cf6', label: 'Artimu metu' },
-                    { height: afterJulyHeight, color: '#10b981', label: 'Po liepos' }
+                    { height: currentHeight, color: '#3b82f6', alpha: 1, lineWidth: 2.5, label: 'Turimi' },  // Strong blue
+                    { height: nearFutureHeight, color: '#94a3b8', alpha: 0.4, lineWidth: 1, label: 'Artimu metu' },  // Muted
+                    { height: afterJulyHeight, color: '#94a3b8', alpha: 0.3, lineWidth: 1, label: 'Po liepos' }  // More muted
                 ];
                 
                 bars.forEach((bar, barIndex) => {
                     const barX = x - barWidth * 1.5 + barIndex * (barWidth + barSpacing);
                     const barY = padding.top + chartHeight - bar.height;
                     
-                    const gradient = ctx.createLinearGradient(0, barY, 0, barY + bar.height);
-                    gradient.addColorStop(0, bar.color);
-                    gradient.addColorStop(1, bar.color + '99');
+                    // Different styling for current vs planned
+                    if (barIndex === 0) {
+                        // TURIMI - Strong, vibrant gradient
+                        const gradient = ctx.createLinearGradient(0, barY, 0, barY + bar.height);
+                        gradient.addColorStop(0, bar.color);
+                        gradient.addColorStop(1, '#2563eb');  // Darker blue at bottom
+                        ctx.fillStyle = gradient;
+                    } else {
+                        // Planned - Flat, muted color with transparency
+                        ctx.fillStyle = `rgba(148, 163, 184, ${bar.alpha})`;
+                    }
                     
-                    ctx.fillStyle = gradient;
                     ctx.fillRect(barX, barY, barWidth, bar.height);
                     
-                    ctx.strokeStyle = bar.color;
-                    ctx.lineWidth = 2;
+                    // Border - stronger for current
+                    ctx.strokeStyle = barIndex === 0 ? bar.color : 'rgba(148, 163, 184, 0.3)';
+                    ctx.lineWidth = bar.lineWidth;
                     ctx.strokeRect(barX, barY, barWidth, bar.height);
+                    
+                    // Display value on top of TURIMI bar
+                    if (barIndex === 0) {
+                        ctx.fillStyle = '#3b82f6';
+                        ctx.font = 'bold 11px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(unit.currentFTE.toFixed(1), barX + barWidth / 2, barY - 5);
+                    }
                 });
                 
                 // Draw requirement zones with gap emphasis
