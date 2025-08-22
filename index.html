@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITU Personalo Skaičiuoklė v4.0 - Enhanced</title>
+    <title>ITU Personalo Skaičiuoklė v5.0 - Enhanced</title>
     <style>
         * {
             margin: 0;
@@ -31,12 +31,17 @@
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
             
-            /* Chart Colors - Updated */
-            --min-color: #f97316; /* Orange for min */
-            --max-color: #dc2626; /* Red for max */
-            --current-color: #3b82f6; /* Blue for current */
-            --plan-near-color: #8b5cf6; /* Purple for near future */
-            --plan-july-color: #10b981; /* Green for after July */
+            /* Chart Colors */
+            --min-color: #f97316;
+            --max-color: #dc2626;
+            --current-color: #3b82f6;
+            --plan-near-color: #8b5cf6;
+            --plan-july-color: #10b981;
+            
+            /* Staff Type Colors */
+            --doctor-color: #3b82f6;
+            --nurse-color: #8b5cf6;
+            --assistant-color: #fb923c;
         }
 
         body {
@@ -175,6 +180,35 @@
         .stat-value.positive { color: var(--success); }
         .stat-value.negative { color: var(--danger); }
         .stat-value.warning { color: var(--warning); }
+
+        /* Staff Type Badges */
+        .staff-type-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .staff-type-gydytojai {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .staff-type-slaugytojai {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .staff-type-padejejai {
+            background: rgba(251, 146, 60, 0.2);
+            color: #fb923c;
+            border: 1px solid rgba(251, 146, 60, 0.3);
+        }
 
         /* Tabs */
         .tabs {
@@ -420,14 +454,65 @@
             accent-color: var(--primary);
         }
 
+        /* Manual override styling */
+        .required-cell {
+            position: relative;
+            padding: 0 !important;
+        }
+
+        .required-input {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .required-value {
+            width: 100%;
+            text-align: center;
+            font-weight: 600;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .required-value.calculated {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .required-value.manual {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #a78bfa;
+        }
+
+        .required-value:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .manual-indicator {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 0.65rem;
+            padding: 1px 4px;
+            border-radius: 4px;
+            background: rgba(139, 92, 246, 0.3);
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
         /* Column widths */
         .col-name { width: 100px; }
+        .col-type { width: 90px; }
         .col-stations { width: 60px; }
         .col-shift { width: 70px; }
         .col-base { width: 60px; text-align: center; }
         .col-min { width: 70px; }
         .col-additional { width: 60px; }
-        .col-required { width: 70px; text-align: center; font-weight: 600; }
+        .col-required { width: 80px; text-align: center; font-weight: 600; }
         .col-current { width: 70px; }
         .col-near-future { width: 80px; }
         .col-after-july { width: 80px; }
@@ -715,8 +800,8 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>ITU Personalo Skaičiuoklė <span class="version-badge">v4.0</span></h1>
-            <p class="subtitle">Intensyviosios terapijos skyrių personalo planavimas pagal LR SAM įsakymą Nr. V-465</p>
+            <h1>ITU Personalo Skaičiuoklė <span class="version-badge">v5.0</span></h1>
+            <p class="subtitle">Universali personalo planavimo sistema su rankiniu REIKIA koregavimu</p>
         </div>
 
         <!-- Dashboard Overview -->
@@ -727,9 +812,19 @@
                 <div class="stat-value" id="totalUnits">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">📊</div>
-                <div class="stat-label">Iš viso postų</div>
-                <div class="stat-value" id="totalStations">0</div>
+                <div class="stat-icon">👨‍⚕️</div>
+                <div class="stat-label">Gydytojų etatai</div>
+                <div class="stat-value" id="doctorFTE">0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👩‍⚕️</div>
+                <div class="stat-label">Slaugytojų etatai</div>
+                <div class="stat-value" id="nurseFTE">0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🤝</div>
+                <div class="stat-label">Padėjėjų etatai</div>
+                <div class="stat-value" id="assistantFTE">0.00</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🎯</div>
@@ -740,16 +835,6 @@
                 <div class="stat-icon">👥</div>
                 <div class="stat-label">Dabartiniai etatai</div>
                 <div class="stat-value" id="totalCurrent">0.00</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">📅</div>
-                <div class="stat-label">Planas: Artimu metu</div>
-                <div class="stat-value positive" id="totalNearFuture">0.00</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🎓</div>
-                <div class="stat-label">Planas: Po liepos</div>
-                <div class="stat-value positive" id="totalAfterJuly">0.00</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">⚖️</div>
@@ -789,6 +874,7 @@
                     <div class="quick-actions">
                         <button class="btn btn-sm btn-secondary" onclick="resetMainToDefaults()">🔄 Atkurti</button>
                         <button class="btn btn-sm btn-secondary" onclick="clearMainAdditional()">🧹 Valyti papild.</button>
+                        <button class="btn btn-sm btn-secondary" onclick="clearMainManual()">🔢 Valyti rankinius</button>
                         <button class="btn btn-sm btn-secondary" onclick="autoConfigureMain()">🤖 Auto konfig.</button>
                     </div>
 
@@ -797,14 +883,15 @@
                             <thead>
                                 <tr>
                                     <th>Skyrius</th>
+                                    <th class="tooltip" data-tooltip="Personalo tipas">Tipas</th>
                                     <th>Postai</th>
                                     <th>Pamaina</th>
                                     <th class="tooltip" data-tooltip="Baziniai FTE vienam postui">Bazė</th>
                                     <th class="tooltip" data-tooltip="Papildomi FTE">Papild.</th>
-                                    <th>Reikia</th>
+                                    <th class="tooltip" data-tooltip="Reikalingi FTE (spustelėkite redaguoti)">Reikia</th>
                                     <th>Turimi</th>
-                                    <th class="tooltip" data-tooltip="FTE po darbuotojų krūvio pakeitimų (planavimui)">Artimu metu</th>
-                                    <th class="tooltip" data-tooltip="FTE kai rezidentai taps gydytojais (planavimui)">Po liepos</th>
+                                    <th class="tooltip" data-tooltip="FTE po darbuotojų krūvio pakeitimų">Artimu metu</th>
+                                    <th class="tooltip" data-tooltip="FTE kai rezidentai taps gydytojais">Po liepos</th>
                                     <th class="tooltip" data-tooltip="Skirtumas tarp turimų ir reikalingų">Skirtumas</th>
                                     <th class="tooltip" data-tooltip="Procentinis skirtumas">Gap %</th>
                                     <th>#</th>
@@ -816,6 +903,7 @@
                             <tfoot>
                                 <tr class="totals-row">
                                     <td>VISO:</td>
+                                    <td>-</td>
                                     <td id="mainTotalStations">0</td>
                                     <td>-</td>
                                     <td>-</td>
@@ -850,6 +938,7 @@
                     <div class="quick-actions">
                         <button class="btn btn-sm btn-secondary" onclick="resetSpecToDefaults()">🔄 Atkurti</button>
                         <button class="btn btn-sm btn-secondary" onclick="clearSpecAdditional()">🧹 Valyti papild.</button>
+                        <button class="btn btn-sm btn-secondary" onclick="clearSpecManual()">🔢 Valyti rankinius</button>
                         <button class="btn btn-sm btn-secondary" onclick="autoConfigureSpec()">🤖 Auto konfig.</button>
                     </div>
 
@@ -858,14 +947,15 @@
                             <thead>
                                 <tr>
                                     <th>Skyrius</th>
+                                    <th class="tooltip" data-tooltip="Personalo tipas">Tipas</th>
                                     <th>Postai</th>
                                     <th>Pamaina</th>
                                     <th class="tooltip" data-tooltip="Baziniai FTE vienam postui">Bazė</th>
                                     <th class="tooltip" data-tooltip="Papildomi FTE">Papild.</th>
-                                    <th>Reikia</th>
+                                    <th class="tooltip" data-tooltip="Reikalingi FTE (spustelėkite redaguoti)">Reikia</th>
                                     <th>Turimi</th>
-                                    <th class="tooltip" data-tooltip="FTE po darbuotojų krūvio pakeitimų (planavimui)">Artimu metu</th>
-                                    <th class="tooltip" data-tooltip="FTE kai rezidentai taps gydytojais (planavimui)">Po liepos</th>
+                                    <th class="tooltip" data-tooltip="FTE po darbuotojų krūvio pakeitimų">Artimu metu</th>
+                                    <th class="tooltip" data-tooltip="FTE kai rezidentai taps gydytojais">Po liepos</th>
                                     <th class="tooltip" data-tooltip="Skirtumas tarp turimų ir reikalingų">Skirtumas</th>
                                     <th class="tooltip" data-tooltip="Procentinis skirtumas">Gap %</th>
                                     <th>#</th>
@@ -877,6 +967,7 @@
                             <tfoot>
                                 <tr class="totals-row">
                                     <td>VISO:</td>
+                                    <td>-</td>
                                     <td id="specTotalStations">0</td>
                                     <td>-</td>
                                     <td>-</td>
@@ -902,43 +993,29 @@
             <div class="charts-grid">
                 <!-- Main Departments Chart -->
                 <div class="chart-section">
-                    <h2 style="color: var(--white); font-size: 1.3rem; margin-bottom: 1rem;">📊 Pagrindiniai ITS skyriai - Santykinis FTE</h2>
+                    <h2 style="color: var(--white); font-size: 1.3rem; margin-bottom: 1rem;">📊 Pagrindiniai ITS skyriai - FTE analizė</h2>
                     
                     <div class="chart-legend">
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #3b82f6; box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);"></div>
-                            <span style="font-weight: 600;">Turimi (dabartiniai)</span>
+                            <div class="legend-color" style="background: #3b82f6;"></div>
+                            <span>Gydytojai</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: rgba(148, 163, 184, 0.4);"></div>
-                            <span style="opacity: 0.7;">Artimu metu (planas)</span>
+                            <div class="legend-color" style="background: #8b5cf6;"></div>
+                            <span>Slaugytojai</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: rgba(148, 163, 184, 0.3);"></div>
-                            <span style="opacity: 0.6;">Po liepos (planas)</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #f97316;"></div>
-                            <span>Min. riba</span>
+                            <div class="legend-color" style="background: #fb923c;"></div>
+                            <span>Padėjėjai</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color" style="background: #dc2626;"></div>
-                            <span>Maks. riba</span>
+                            <span>Reikalingi FTE</span>
                         </div>
                     </div>
 
                     <div class="chart-container">
                         <canvas id="mainDeptChart" width="600" height="400"></canvas>
-                    </div>
-
-                    <div class="info-box" style="margin-top: 1rem;">
-                        <h4>📊 Santykinio grafiko paaiškinimas</h4>
-                        <ul>
-                            <li>Grafikas rodo FTE santykį su min/maks ribomis</li>
-                            <li>Baseline nustatomas dinamiškai pagal mažiausią skyrių ± 2 FTE</li>
-                            <li>Oranžinė linija = minimalus reikalingas FTE</li>
-                            <li>Raudona linija = maksimalus reikalingas FTE</li>
-                        </ul>
                     </div>
                 </div>
 
@@ -948,38 +1025,25 @@
                     
                     <div class="chart-legend">
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #3b82f6; box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);"></div>
-                            <span style="font-weight: 600;">Turimi (dabartiniai)</span>
+                            <div class="legend-color" style="background: #3b82f6;"></div>
+                            <span>Gydytojai</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: rgba(148, 163, 184, 0.4);"></div>
-                            <span style="opacity: 0.7;">Artimu metu (planas)</span>
+                            <div class="legend-color" style="background: #8b5cf6;"></div>
+                            <span>Slaugytojai</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: rgba(148, 163, 184, 0.3);"></div>
-                            <span style="opacity: 0.6;">Po liepos (planas)</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #f97316;"></div>
-                            <span>Min. riba</span>
+                            <div class="legend-color" style="background: #fb923c;"></div>
+                            <span>Padėjėjai</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color" style="background: #dc2626;"></div>
-                            <span>Maks. riba</span>
+                            <span>Reikalingi FTE</span>
                         </div>
                     </div>
 
                     <div class="chart-container">
                         <canvas id="specDeptChart" width="600" height="400"></canvas>
-                    </div>
-
-                    <div class="info-box" style="margin-top: 1rem;">
-                        <h4>📊 Gap analizės grafiko paaiškinimas</h4>
-                        <ul>
-                            <li>Grafikas akcentuoja skirtumus tarp turimų ir reikalingų FTE</li>
-                            <li>Vizualizacija pritaikyta mažesniems skyriams</li>
-                            <li>Spalvos padeda identifikuoti kritines sritis</li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -988,32 +1052,34 @@
         <!-- Help Tab -->
         <div id="help-tab" class="tab-content">
             <div class="info-box">
+                <h4>🎯 REIKIA laukas - Naujas funkcionalumas (v5.0)</h4>
+                <ul>
+                    <li><strong>Automatinis skaičiavimas:</strong> REIKIA = (Postai × Bazė) + Papildomi FTE</li>
+                    <li><strong>Rankinis koregavimas:</strong> Spustelėkite REIKIA lauką norėdami įvesti savo reikšmę</li>
+                    <li><strong style="color: #fbbf24;">Geltona spalva:</strong> Automatiškai apskaičiuota reikšmė</li>
+                    <li><strong style="color: #a78bfa;">Violetinė spalva:</strong> Rankiniu būdu įvesta reikšmė</li>
+                    <li>Visos analizės (skirtumai, procentai, grafikai) naudoja REIKIA reikšmę</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>👥 Personalo tipų sistema</h4>
+                <ul>
+                    <li><strong style="color: #60a5fa;">Gydytojai:</strong> Medicininis personalas</li>
+                    <li><strong style="color: #a78bfa;">Slaugytojai:</strong> Slaugos personalas</li>
+                    <li><strong style="color: #fb923c;">Padėjėjai:</strong> Pagalbinis personalas</li>
+                    <li>Visi tipai naudoja tą pačią skaičiavimo formulę</li>
+                    <li>Kiekvienas tipas gali turėti rankinį REIKIA koregavimą</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
                 <h4>📐 Skaičiavimo metodika</h4>
                 <ul>
                     <li><strong>Bazinis FTE skaičiavimas:</strong> Pamainų valandos × Dienos ÷ 40 val/sav × 1.25 (nebuvimo koef.)</li>
                     <li><strong>24/7 pamainos:</strong> (24h × 7d) ÷ 40h × 1.25 = 5.25 FTE/postui</li>
                     <li><strong>12/7 pamainos:</strong> (12h × 7d) ÷ 40h × 1.25 = 2.625 FTE/postui</li>
                     <li><strong>1 FTE = 40 val/sav</strong> standartinis darbo krūvis</li>
-                </ul>
-            </div>
-
-            <div class="info-box" style="margin-top: 1.5rem;">
-                <h4>📊 Grafikų spalvų sistema (v4.0) - TURIMI fokusas</h4>
-                <ul>
-                    <li><strong style="color: #3b82f6;">Mėlyni stulpeliai (ryškūs):</strong> TURIMI - dabartiniai FTE (pagrindinis fokusas)</li>
-                    <li><strong style="color: #94a3b8;">Pilki stulpeliai (prislopinti):</strong> Planuojami FTE artimu metu ir po liepos (tik orientaciniai)</li>
-                    <li><strong style="color: #f97316;">Oranžinė linija:</strong> Minimalus reikalingas FTE (bazė)</li>
-                    <li><strong style="color: #dc2626;">Raudona linija:</strong> Maksimalus reikalingas FTE (su papildomais)</li>
-                    <li>⚠️ <strong>Svarbu:</strong> Grafikas vizualiai pabrėžia dabartinę situaciją (TURIMI), o planuojami rodikliai rodomi prislopintai</li>
-                </ul>
-            </div>
-
-            <div class="info-box" style="margin-top: 1.5rem;">
-                <h4>📈 Grafikų tipai</h4>
-                <ul>
-                    <li><strong>Pagrindinių skyrių grafikas:</strong> Rodo santykinius FTE nuo dinaminio baseline, geriau matosi proporcijos</li>
-                    <li><strong>Specializuotų skyrių grafikas:</strong> Fokusas į gap analizę, rodo skirtumus tarp turimų ir reikalingų FTE</li>
-                    <li><strong>Baseline skaičiavimas:</strong> Mažiausias skyriaus FTE ± 2, kad būtų geriau matomi skirtumai</li>
                 </ul>
             </div>
         </div>
@@ -1039,13 +1105,21 @@
             '8/5': 1.25
         };
 
+        const STAFF_TYPES = {
+            'Gydytojai': { color: '#3b82f6', icon: '👨‍⚕️' },
+            'Slaugytojai': { color: '#8b5cf6', icon: '👩‍⚕️' },
+            'Padėjėjai': { color: '#fb923c', icon: '🤝' }
+        };
+
         // State
         let mainUnits = [
             { 
                 name: 'I ITS', 
+                staffType: 'Gydytojai',
                 stations: 3, 
                 shiftType: '24/7', 
                 additionalFTE: 1, 
+                manualRequired: null,  // null means use calculated value
                 currentFTE: 18, 
                 nearFutureFTE: 18.5,
                 afterJulyFTE: 20,
@@ -1053,9 +1127,11 @@
             },
             { 
                 name: 'II ITS', 
+                staffType: 'Slaugytojai',
                 stations: 3, 
                 shiftType: '24/7', 
-                additionalFTE: 1, 
+                additionalFTE: 1,
+                manualRequired: null,
                 currentFTE: 15.125,
                 nearFutureFTE: 16,
                 afterJulyFTE: 17.5,
@@ -1063,9 +1139,11 @@
             },
             { 
                 name: 'III ITS', 
+                staffType: 'Gydytojai',
                 stations: 2, 
                 shiftType: '24/7', 
-                additionalFTE: 0.75, 
+                additionalFTE: 0.75,
+                manualRequired: null, 
                 currentFTE: 11.75,
                 nearFutureFTE: 11.75,
                 afterJulyFTE: 12.5,
@@ -1073,9 +1151,11 @@
             },
             { 
                 name: 'IV ITS', 
+                staffType: 'Padėjėjai',
                 stations: 1, 
                 shiftType: '24/7', 
-                additionalFTE: 0.25, 
+                additionalFTE: 0.25,
+                manualRequired: null,
                 currentFTE: 5.5,
                 nearFutureFTE: 5.5,
                 afterJulyFTE: 6,
@@ -1086,9 +1166,11 @@
         let specUnits = [
             { 
                 name: 'PTP', 
+                staffType: 'Gydytojai',
                 stations: 1, 
                 shiftType: '12/6', 
-                additionalFTE: 0.25, 
+                additionalFTE: 0.25,
+                manualRequired: null,
                 currentFTE: 3,
                 nearFutureFTE: 3,
                 afterJulyFTE: 3.5,
@@ -1096,15 +1178,41 @@
             },
             { 
                 name: 'RDPKP', 
+                staffType: 'Slaugytojai',
                 stations: 1, 
                 shiftType: '12/6', 
-                additionalFTE: 0, 
+                additionalFTE: 0,
+                manualRequired: null,
                 currentFTE: 2,
                 nearFutureFTE: 2.25,
                 afterJulyFTE: 2.5,
                 isCritical: false 
             }
         ];
+
+        // Calculate functions
+        function calculateUnit(unit) {
+            const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
+            unit.baseRequired = unit.stations * baseFTEPerStation;
+            
+            // Calculate required FTE
+            const calculatedRequired = unit.baseRequired + (unit.additionalFTE || 0);
+            
+            // Use manual override if set, otherwise use calculated value
+            unit.totalRequired = unit.manualRequired !== null ? unit.manualRequired : calculatedRequired;
+            unit.isManualRequired = unit.manualRequired !== null;
+            
+            unit.gap = unit.currentFTE - unit.totalRequired;
+            unit.gapPercentage = unit.totalRequired > 0 ? (unit.gap / unit.totalRequired) * 100 : 0;
+            
+            const weightFactor = unit.isCritical ? 1.5 : 1.0;
+            unit.priorityScore = Math.abs(unit.gapPercentage) * weightFactor;
+            
+            unit.nearFutureGap = (unit.nearFutureFTE || unit.currentFTE) - unit.totalRequired;
+            unit.afterJulyGap = (unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) - unit.totalRequired;
+            
+            return unit;
+        }
 
         // Tab switching
         function switchTab(tabName) {
@@ -1127,39 +1235,29 @@
             }
         }
 
-        // Auto configure
-        function autoConfigureMain() {
-            mainUnits.forEach(unit => {
-                unit.additionalFTE = Math.max(0, Math.floor(unit.stations * 0.33 * 4) / 4);
-            });
-            updateAll();
-            showToast('Pagrindiniams skyriams pritaikyta išmani konfigūracija', 'success');
-        }
-
-        function autoConfigureSpec() {
-            specUnits.forEach(unit => {
-                unit.additionalFTE = unit.stations > 2 ? 0.5 : 0.25;
-            });
-            updateAll();
-            showToast('Specializuotiems skyriams pritaikyta išmani konfigūracija', 'success');
-        }
-
-        // Calculate functions
-        function calculateUnit(unit) {
-            const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
-            unit.baseRequired = unit.stations * baseFTEPerStation;
-            unit.totalRequired = unit.baseRequired + (unit.additionalFTE || 0);
+        // Toggle required field between manual and calculated
+        function toggleRequiredField(prefix, index) {
+            const units = prefix === 'main' ? mainUnits : specUnits;
+            const unit = units[index];
             
-            unit.gap = unit.currentFTE - unit.totalRequired;
-            unit.gapPercentage = unit.totalRequired > 0 ? (unit.gap / unit.totalRequired) * 100 : 0;
-            
-            const weightFactor = unit.isCritical ? 1.5 : 1.0;
-            unit.priorityScore = Math.abs(unit.gapPercentage) * weightFactor;
-            
-            unit.nearFutureGap = (unit.nearFutureFTE || unit.currentFTE) - unit.totalRequired;
-            unit.afterJulyGap = (unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) - unit.totalRequired;
-            
-            return unit;
+            if (unit.manualRequired === null) {
+                // Switch to manual mode with current calculated value
+                const calculatedValue = unit.baseRequired + (unit.additionalFTE || 0);
+                const newValue = prompt('Įveskite reikalingus FTE:', calculatedValue.toFixed(2));
+                
+                if (newValue !== null && !isNaN(parseFloat(newValue))) {
+                    unit.manualRequired = parseFloat(newValue);
+                    updateAll();
+                    showToast('🔢 Perjungta į rankinį režimą', 'info');
+                }
+            } else {
+                // Switch back to calculated mode
+                if (confirm('Grįžti į automatinį skaičiavimą?')) {
+                    unit.manualRequired = null;
+                    updateAll();
+                    showToast('🔄 Grįžta į automatinį skaičiavimą', 'success');
+                }
+            }
         }
 
         function renderUnits(units, bodyId, prefix) {
@@ -1195,8 +1293,21 @@
                     <td class="col-name">
                         <input type="text" value="${unit.name}" onchange="updateUnit('${prefix}', ${index}, 'name', this.value)">
                     </td>
+                    <td class="col-type">
+                        <select onchange="updateUnit('${prefix}', ${index}, 'staffType', this.value)" 
+                                style="background: ${
+                                    unit.staffType === 'Gydytojai' ? 'rgba(59, 130, 246, 0.1)' : 
+                                    unit.staffType === 'Slaugytojai' ? 'rgba(139, 92, 246, 0.1)' : 
+                                    'rgba(251, 146, 60, 0.1)'
+                                };">
+                            <option value="Gydytojai" ${unit.staffType === 'Gydytojai' ? 'selected' : ''}>Gydytojai</option>
+                            <option value="Slaugytojai" ${unit.staffType === 'Slaugytojai' ? 'selected' : ''}>Slaugytojai</option>
+                            <option value="Padėjėjai" ${unit.staffType === 'Padėjėjai' ? 'selected' : ''}>Padėjėjai</option>
+                        </select>
+                    </td>
                     <td class="col-stations">
-                        <input type="number" value="${unit.stations}" min="0" onchange="updateUnit('${prefix}', ${index}, 'stations', this.value)">
+                        <input type="number" value="${unit.stations}" min="0" 
+                               onchange="updateUnit('${prefix}', ${index}, 'stations', this.value)">
                     </td>
                     <td class="col-shift">
                         <select onchange="updateUnit('${prefix}', ${index}, 'shiftType', this.value)">
@@ -1205,12 +1316,23 @@
                             ).join('')}
                         </select>
                     </td>
-                    <td class="col-base" style="color: #60a5fa;">${baseFTEPerStation}</td>
+                    <td class="col-base" style="color: #60a5fa;">
+                        ${baseFTEPerStation}
+                    </td>
                     <td class="col-additional">
                         <input type="number" value="${unit.additionalFTE}" step="0.25" min="0"
                                onchange="updateUnit('${prefix}', ${index}, 'additionalFTE', this.value)">
                     </td>
-                    <td class="col-required" style="color: #fbbf24;">${unit.totalRequired.toFixed(2)}</td>
+                    <td class="col-required required-cell">
+                        <div class="required-input">
+                            <div class="required-value ${unit.isManualRequired ? 'manual' : 'calculated'}"
+                                 onclick="toggleRequiredField('${prefix}', ${index})"
+                                 title="${unit.isManualRequired ? 'Rankinis įvedimas. Spustelėkite grįžti į automatinį' : 'Automatinis skaičiavimas. Spustelėkite redaguoti'}">
+                                ${unit.totalRequired.toFixed(2)}
+                                ${unit.isManualRequired ? '<span class="manual-indicator">M</span>' : ''}
+                            </div>
+                        </div>
+                    </td>
                     <td class="col-current">
                         <input type="number" value="${unit.currentFTE}" step="0.125" min="0"
                                onchange="updateUnit('${prefix}', ${index}, 'currentFTE', this.value)">
@@ -1281,6 +1403,10 @@
             let totalAfterJuly = 0;
             let shortageCount = 0;
             
+            let doctorFTE = 0;
+            let nurseFTE = 0;
+            let assistantFTE = 0;
+            
             allUnits.forEach(unit => {
                 calculateUnit(unit);
                 totalStations += unit.stations;
@@ -1290,16 +1416,25 @@
                 totalAfterJuly += unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE;
                 
                 if (unit.gap < 0) shortageCount++;
+                
+                // Count by staff type
+                if (unit.staffType === 'Gydytojai') {
+                    doctorFTE += unit.currentFTE;
+                } else if (unit.staffType === 'Slaugytojai') {
+                    nurseFTE += unit.currentFTE;
+                } else if (unit.staffType === 'Padėjėjai') {
+                    assistantFTE += unit.currentFTE;
+                }
             });
             
             const currentGap = totalCurrent - totalRequired;
             
             document.getElementById('totalUnits').textContent = allUnits.length;
-            document.getElementById('totalStations').textContent = totalStations;
+            document.getElementById('doctorFTE').textContent = doctorFTE.toFixed(2);
+            document.getElementById('nurseFTE').textContent = nurseFTE.toFixed(2);
+            document.getElementById('assistantFTE').textContent = assistantFTE.toFixed(2);
             document.getElementById('totalRequired').textContent = totalRequired.toFixed(2);
             document.getElementById('totalCurrent').textContent = totalCurrent.toFixed(2);
-            document.getElementById('totalNearFuture').textContent = totalNearFuture.toFixed(2);
-            document.getElementById('totalAfterJuly').textContent = totalAfterJuly.toFixed(2);
             document.getElementById('shortageUnits').textContent = shortageCount;
             
             const balanceEl = document.getElementById('totalBalance');
@@ -1307,7 +1442,7 @@
             balanceEl.className = currentGap < 0 ? 'stat-value negative' : 'stat-value positive';
         }
 
-        // Enhanced Chart Drawing Functions
+        // Chart Drawing Functions
         function drawMainDeptChart() {
             const canvas = document.getElementById('mainDeptChart');
             if (!canvas) return;
@@ -1318,23 +1453,12 @@
             
             ctx.clearRect(0, 0, width, height);
             
-            // Calculate baseline (smallest department FTE or 8, whichever is appropriate)
-            let minFTE = Math.min(...mainUnits.map(u => Math.min(
-                u.baseRequired,
-                u.currentFTE,
-                u.nearFutureFTE || u.currentFTE,
-                u.afterJulyFTE || u.currentFTE
-            )));
-            
-            // Set baseline with ±2 FTE margin for better visualization
-            const baseline = Math.max(0, minFTE - 2);
-            
             // Chart dimensions
             const padding = { top: 40, right: 60, bottom: 60, left: 80 };
             const chartWidth = width - padding.left - padding.right;
             const chartHeight = height - padding.top - padding.bottom;
             
-            // Calculate max value for scale (relative to baseline)
+            // Calculate max value for scale
             let maxValue = 0;
             mainUnits.forEach(unit => {
                 const max = Math.max(
@@ -1343,7 +1467,7 @@
                     unit.nearFutureFTE || 0,
                     unit.afterJulyFTE || 0
                 );
-                if (max - baseline > maxValue) maxValue = max - baseline;
+                if (max > maxValue) maxValue = max;
             });
             maxValue = maxValue * 1.1;
             
@@ -1361,7 +1485,7 @@
                 ctx.fillStyle = '#94a3b8';
                 ctx.font = '11px sans-serif';
                 ctx.textAlign = 'right';
-                const value = baseline + maxValue - (maxValue / 5) * i;
+                const value = maxValue - (maxValue / 5) * i;
                 ctx.fillText(value.toFixed(1), padding.left - 10, y + 4);
             }
             
@@ -1373,17 +1497,18 @@
             // Draw units
             mainUnits.forEach((unit, index) => {
                 const x = padding.left + groupWidth * index + groupWidth / 2;
+                const staffColor = STAFF_TYPES[unit.staffType]?.color || '#3b82f6';
                 
-                // Calculate heights (relative to baseline)
-                const currentHeight = ((unit.currentFTE - baseline) / maxValue) * chartHeight;
-                const nearFutureHeight = (((unit.nearFutureFTE || unit.currentFTE) - baseline) / maxValue) * chartHeight;
-                const afterJulyHeight = (((unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) - baseline) / maxValue) * chartHeight;
+                // Calculate heights
+                const currentHeight = (unit.currentFTE / maxValue) * chartHeight;
+                const nearFutureHeight = ((unit.nearFutureFTE || unit.currentFTE) / maxValue) * chartHeight;
+                const afterJulyHeight = ((unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) / maxValue) * chartHeight;
                 
-                // Draw bars with emphasis on TURIMI (current)
+                // Draw bars with staff type colors
                 const bars = [
-                    { height: currentHeight, color: '#3b82f6', alpha: 1, lineWidth: 2.5, label: 'Turimi' },  // Strong blue for current
-                    { height: nearFutureHeight, color: '#94a3b8', alpha: 0.4, lineWidth: 1, label: 'Artimu metu' },  // Muted gray
-                    { height: afterJulyHeight, color: '#94a3b8', alpha: 0.3, lineWidth: 1, label: 'Po liepos' }  // Even more muted
+                    { height: currentHeight, label: 'Turimi' },
+                    { height: nearFutureHeight, label: 'Artimu metu' },
+                    { height: afterJulyHeight, label: 'Po liepos' }
                 ];
                 
                 bars.forEach((bar, barIndex) => {
@@ -1391,28 +1516,20 @@
                         const barX = x - barWidth * 1.5 + barIndex * (barWidth + barSpacing);
                         const barY = padding.top + chartHeight - bar.height;
                         
-                        // Different styling for current vs planned
-                        if (barIndex === 0) {
-                            // TURIMI - Strong, vibrant gradient
-                            const gradient = ctx.createLinearGradient(0, barY, 0, barY + bar.height);
-                            gradient.addColorStop(0, bar.color);
-                            gradient.addColorStop(1, '#2563eb');  // Darker blue at bottom
-                            ctx.fillStyle = gradient;
-                        } else {
-                            // Planned - Flat, muted color
-                            ctx.fillStyle = `rgba(148, 163, 184, ${bar.alpha})`;  // Gray with transparency
-                        }
+                        // Apply staff type color with different opacity for planning periods
+                        const opacity = barIndex === 0 ? 1 : (0.6 - barIndex * 0.15);
+                        ctx.fillStyle = `${staffColor}${Math.floor(opacity * 255).toString(16).padStart(2, '0')}`;
                         
                         ctx.fillRect(barX, barY, barWidth, bar.height);
                         
-                        // Border - stronger for current
-                        ctx.strokeStyle = barIndex === 0 ? bar.color : 'rgba(148, 163, 184, 0.3)';
-                        ctx.lineWidth = bar.lineWidth;
+                        // Border
+                        ctx.strokeStyle = staffColor;
+                        ctx.lineWidth = barIndex === 0 ? 2 : 1;
                         ctx.strokeRect(barX, barY, barWidth, bar.height);
                         
-                        // Display value on top of TURIMI bar
+                        // Display value on top of current bar
                         if (barIndex === 0) {
-                            ctx.fillStyle = '#3b82f6';
+                            ctx.fillStyle = staffColor;
                             ctx.font = 'bold 11px sans-serif';
                             ctx.textAlign = 'center';
                             ctx.fillText(unit.currentFTE.toFixed(1), barX + barWidth / 2, barY - 5);
@@ -1420,37 +1537,37 @@
                     }
                 });
                 
-                // Draw threshold lines (orange for min, red for max)
-                const minRequired = ((unit.baseRequired - baseline) / maxValue) * chartHeight;
-                const maxRequired = ((unit.totalRequired - baseline) / maxValue) * chartHeight;
+                // Draw threshold line
+                const requiredHeight = (unit.totalRequired / maxValue) * chartHeight;
                 
-                // Min threshold (orange)
-                ctx.strokeStyle = '#f97316';
+                // Required threshold
+                ctx.strokeStyle = unit.isManualRequired ? '#8b5cf6' : '#dc2626';
                 ctx.lineWidth = 2;
                 ctx.setLineDash([5, 5]);
                 ctx.beginPath();
-                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - minRequired);
-                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - minRequired);
-                ctx.stroke();
-                
-                // Max threshold (red)
-                ctx.strokeStyle = '#dc2626';
-                ctx.beginPath();
-                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - maxRequired);
-                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - maxRequired);
+                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - requiredHeight);
+                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - requiredHeight);
                 ctx.stroke();
                 ctx.setLineDash([]);
                 
-                // Unit name
+                // Add "M" indicator for manual required
+                if (unit.isManualRequired) {
+                    ctx.fillStyle = '#8b5cf6';
+                    ctx.font = 'bold 10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('M', x + groupWidth * 0.4 + 10, padding.top + chartHeight - requiredHeight + 3);
+                }
+                
+                // Unit name with staff type indicator
                 ctx.fillStyle = '#e2e8f0';
                 ctx.font = 'bold 13px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText(unit.name, x, height - 30);
                 
-                // Station count
-                ctx.fillStyle = '#64748b';
+                // Staff type badge
+                ctx.fillStyle = staffColor;
                 ctx.font = '10px sans-serif';
-                ctx.fillText(`${unit.stations} ${unit.stations === 1 ? 'postas' : 'postai'}`, x, height - 15);
+                ctx.fillText(unit.staffType, x, height - 15);
                 
                 // Gap indicator
                 if (unit.gap < 0) {
@@ -1464,7 +1581,7 @@
             ctx.fillStyle = '#e2e8f0';
             ctx.font = 'bold 14px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(`Santykinis FTE (baseline: ${baseline.toFixed(1)})`, width / 2, 25);
+            ctx.fillText('FTE analizė pagal personalo tipus', width / 2, 25);
             
             // Y-axis label
             ctx.save();
@@ -1473,7 +1590,7 @@
             ctx.font = '12px sans-serif';
             ctx.fillStyle = '#94a3b8';
             ctx.textAlign = 'center';
-            ctx.fillText('FTE (nuo baseline)', 0, 0);
+            ctx.fillText('FTE', 0, 0);
             ctx.restore();
         }
 
@@ -1492,13 +1609,9 @@
             const chartWidth = width - padding.left - padding.right;
             const chartHeight = height - padding.top - padding.bottom;
             
-            // Calculate scale for gap visualization
-            let maxAbsGap = 0;
+            // Calculate scale
             let maxFTE = 0;
             specUnits.forEach(unit => {
-                const absGap = Math.abs(unit.gap);
-                if (absGap > maxAbsGap) maxAbsGap = absGap;
-                
                 const max = Math.max(
                     unit.totalRequired,
                     unit.currentFTE,
@@ -1533,85 +1646,76 @@
             const barWidth = groupWidth / 4;
             const barSpacing = barWidth * 0.3;
             
-            // Draw units with gap emphasis
+            // Draw units
             specUnits.forEach((unit, index) => {
                 const x = padding.left + groupWidth * index + groupWidth / 2;
+                const staffColor = STAFF_TYPES[unit.staffType]?.color || '#3b82f6';
                 
                 // Calculate heights
                 const currentHeight = (unit.currentFTE / maxFTE) * chartHeight;
                 const nearFutureHeight = ((unit.nearFutureFTE || unit.currentFTE) / maxFTE) * chartHeight;
                 const afterJulyHeight = ((unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) / maxFTE) * chartHeight;
                 
-                // Draw bars with emphasis on TURIMI (current)
+                // Draw bars
                 const bars = [
-                    { height: currentHeight, color: '#3b82f6', alpha: 1, lineWidth: 2.5, label: 'Turimi' },  // Strong blue
-                    { height: nearFutureHeight, color: '#94a3b8', alpha: 0.4, lineWidth: 1, label: 'Artimu metu' },  // Muted
-                    { height: afterJulyHeight, color: '#94a3b8', alpha: 0.3, lineWidth: 1, label: 'Po liepos' }  // More muted
+                    { height: currentHeight, label: 'Turimi' },
+                    { height: nearFutureHeight, label: 'Artimu metu' },
+                    { height: afterJulyHeight, label: 'Po liepos' }
                 ];
                 
                 bars.forEach((bar, barIndex) => {
                     const barX = x - barWidth * 1.5 + barIndex * (barWidth + barSpacing);
                     const barY = padding.top + chartHeight - bar.height;
                     
-                    // Different styling for current vs planned
-                    if (barIndex === 0) {
-                        // TURIMI - Strong, vibrant gradient
-                        const gradient = ctx.createLinearGradient(0, barY, 0, barY + bar.height);
-                        gradient.addColorStop(0, bar.color);
-                        gradient.addColorStop(1, '#2563eb');  // Darker blue at bottom
-                        ctx.fillStyle = gradient;
-                    } else {
-                        // Planned - Flat, muted color with transparency
-                        ctx.fillStyle = `rgba(148, 163, 184, ${bar.alpha})`;
-                    }
+                    // Apply staff type color
+                    const opacity = barIndex === 0 ? 1 : (0.6 - barIndex * 0.15);
+                    ctx.fillStyle = `${staffColor}${Math.floor(opacity * 255).toString(16).padStart(2, '0')}`;
                     
                     ctx.fillRect(barX, barY, barWidth, bar.height);
                     
-                    // Border - stronger for current
-                    ctx.strokeStyle = barIndex === 0 ? bar.color : 'rgba(148, 163, 184, 0.3)';
-                    ctx.lineWidth = bar.lineWidth;
+                    // Border
+                    ctx.strokeStyle = staffColor;
+                    ctx.lineWidth = barIndex === 0 ? 2 : 1;
                     ctx.strokeRect(barX, barY, barWidth, bar.height);
                     
-                    // Display value on top of TURIMI bar
+                    // Display value
                     if (barIndex === 0) {
-                        ctx.fillStyle = '#3b82f6';
+                        ctx.fillStyle = staffColor;
                         ctx.font = 'bold 11px sans-serif';
                         ctx.textAlign = 'center';
                         ctx.fillText(unit.currentFTE.toFixed(1), barX + barWidth / 2, barY - 5);
                     }
                 });
                 
-                // Draw requirement zones with gap emphasis
-                const minRequired = (unit.baseRequired / maxFTE) * chartHeight;
-                const maxRequired = (unit.totalRequired / maxFTE) * chartHeight;
+                // Draw requirement zones
+                const requiredHeight = (unit.totalRequired / maxFTE) * chartHeight;
                 
                 // Highlight gap area
                 if (unit.gap < 0) {
-                    // Shortage - highlight area between current and required
-                    const gapY = padding.top + chartHeight - maxRequired;
-                    const gapHeight = maxRequired - currentHeight;
+                    const gapY = padding.top + chartHeight - requiredHeight;
+                    const gapHeight = requiredHeight - currentHeight;
                     
                     ctx.fillStyle = 'rgba(239, 68, 68, 0.1)';
                     ctx.fillRect(x - groupWidth * 0.4, gapY, groupWidth * 0.8, gapHeight);
                 }
                 
-                // Min threshold (orange)
-                ctx.strokeStyle = '#f97316';
+                // Required threshold
+                ctx.strokeStyle = unit.isManualRequired ? '#8b5cf6' : '#dc2626';
                 ctx.lineWidth = 3;
                 ctx.setLineDash([5, 5]);
                 ctx.beginPath();
-                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - minRequired);
-                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - minRequired);
-                ctx.stroke();
-                
-                // Max threshold (red)
-                ctx.strokeStyle = '#dc2626';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - maxRequired);
-                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - maxRequired);
+                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - requiredHeight);
+                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - requiredHeight);
                 ctx.stroke();
                 ctx.setLineDash([]);
+                
+                // Add "M" indicator for manual required
+                if (unit.isManualRequired) {
+                    ctx.fillStyle = '#8b5cf6';
+                    ctx.font = 'bold 10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('M', x + groupWidth * 0.4 + 10, padding.top + chartHeight - requiredHeight + 3);
+                }
                 
                 // Unit name
                 ctx.fillStyle = '#e2e8f0';
@@ -1619,14 +1723,19 @@
                 ctx.textAlign = 'center';
                 ctx.fillText(unit.name, x, height - 30);
                 
-                // Gap value (prominent)
+                // Staff type
+                ctx.fillStyle = staffColor;
+                ctx.font = '10px sans-serif';
+                ctx.fillText(unit.staffType, x, height - 15);
+                
+                // Gap value
                 ctx.font = 'bold 14px sans-serif';
                 if (unit.gap < 0) {
                     ctx.fillStyle = '#ef4444';
-                    ctx.fillText(`Gap: ${unit.gap.toFixed(1)}`, x, height - 10);
+                    ctx.fillText(`Gap: ${unit.gap.toFixed(1)}`, x, height - 45);
                 } else {
                     ctx.fillStyle = '#10b981';
-                    ctx.fillText(`+${unit.gap.toFixed(1)}`, x, height - 10);
+                    ctx.fillText(`+${unit.gap.toFixed(1)}`, x, height - 45);
                 }
             });
             
@@ -1664,14 +1773,18 @@
         function updateUnit(prefix, index, field, value) {
             const units = prefix === 'main' ? mainUnits : specUnits;
             
-            if (field === 'name') {
+            if (field === 'name' || field === 'shiftType' || field === 'staffType') {
                 units[index][field] = value;
             } else if (field === 'isCritical') {
                 units[index][field] = value;
-            } else if (field === 'shiftType') {
-                units[index][field] = value;
             } else {
                 units[index][field] = parseFloat(value) || 0;
+            }
+            
+            // If stations, shift, or additional FTE change, and we're in manual mode, 
+            // user might want to recalculate
+            if (['stations', 'shiftType', 'additionalFTE'].includes(field) && units[index].manualRequired !== null) {
+                // Keep manual value, but user can switch back to calculated if needed
             }
             
             updateAll();
@@ -1682,9 +1795,11 @@
             const newUnitNumber = mainUnits.length + 1;
             mainUnits.push({
                 name: newUnitNumber <= 4 ? `${['I', 'II', 'III', 'IV', 'V'][newUnitNumber - 1]} ITS` : `${newUnitNumber} ITS`,
+                staffType: 'Gydytojai',
                 stations: 1,
                 shiftType: '24/7',
                 additionalFTE: 0,
+                manualRequired: null,
                 currentFTE: 0,
                 nearFutureFTE: 0,
                 afterJulyFTE: 0,
@@ -1707,9 +1822,11 @@
         function addSpecUnit() {
             specUnits.push({
                 name: 'Spec ' + (specUnits.length + 1),
+                staffType: 'Gydytojai',
                 stations: 1,
                 shiftType: '12/6',
                 additionalFTE: 0,
+                manualRequired: null,
                 currentFTE: 0,
                 nearFutureFTE: 0,
                 afterJulyFTE: 0,
@@ -1729,15 +1846,49 @@
             }
         }
 
+        // Clear manual overrides
+        function clearMainManual() {
+            mainUnits.forEach(unit => {
+                unit.manualRequired = null;
+            });
+            updateAll();
+            showToast('🔢 Išvalyti rankiniai REIKIA įvedimai', 'success');
+        }
+
+        function clearSpecManual() {
+            specUnits.forEach(unit => {
+                unit.manualRequired = null;
+            });
+            updateAll();
+            showToast('🔢 Išvalyti rankiniai REIKIA įvedimai', 'success');
+        }
+
+        // Auto configure
+        function autoConfigureMain() {
+            mainUnits.forEach(unit => {
+                unit.additionalFTE = Math.max(0, Math.floor(unit.stations * 0.33 * 4) / 4);
+            });
+            updateAll();
+            showToast('Pagrindiniams skyriams pritaikyta išmani konfigūracija', 'success');
+        }
+
+        function autoConfigureSpec() {
+            specUnits.forEach(unit => {
+                unit.additionalFTE = unit.stations > 2 ? 0.5 : 0.25;
+            });
+            updateAll();
+            showToast('Specializuotiems skyriams pritaikyta išmani konfigūracija', 'success');
+        }
+
         // Reset functions
         function resetMainToDefaults() {
             if (!confirm('Atkurti pagrindinių skyrių numatytuosius nustatymus?')) return;
             
             mainUnits = [
-                { name: 'I ITS', stations: 3, shiftType: '24/7', additionalFTE: 1, currentFTE: 18, nearFutureFTE: 18.5, afterJulyFTE: 20, isCritical: false },
-                { name: 'II ITS', stations: 3, shiftType: '24/7', additionalFTE: 1, currentFTE: 15.125, nearFutureFTE: 16, afterJulyFTE: 17.5, isCritical: false },
-                { name: 'III ITS', stations: 2, shiftType: '24/7', additionalFTE: 0.75, currentFTE: 11.75, nearFutureFTE: 11.75, afterJulyFTE: 12.5, isCritical: false },
-                { name: 'IV ITS', stations: 1, shiftType: '24/7', additionalFTE: 0.25, currentFTE: 5.5, nearFutureFTE: 5.5, afterJulyFTE: 6, isCritical: false }
+                { name: 'I ITS', staffType: 'Gydytojai', stations: 3, shiftType: '24/7', additionalFTE: 1, manualRequired: null, currentFTE: 18, nearFutureFTE: 18.5, afterJulyFTE: 20, isCritical: false },
+                { name: 'II ITS', staffType: 'Slaugytojai', stations: 3, shiftType: '24/7', additionalFTE: 1, manualRequired: null, currentFTE: 15.125, nearFutureFTE: 16, afterJulyFTE: 17.5, isCritical: false },
+                { name: 'III ITS', staffType: 'Gydytojai', stations: 2, shiftType: '24/7', additionalFTE: 0.75, manualRequired: null, currentFTE: 11.75, nearFutureFTE: 11.75, afterJulyFTE: 12.5, isCritical: false },
+                { name: 'IV ITS', staffType: 'Padėjėjai', stations: 1, shiftType: '24/7', additionalFTE: 0.25, manualRequired: null, currentFTE: 5.5, nearFutureFTE: 5.5, afterJulyFTE: 6, isCritical: false }
             ];
             updateAll();
             showToast('🔄 Atkurti numatytieji nustatymai', 'success');
@@ -1747,37 +1898,42 @@
             if (!confirm('Atkurti specializuotų skyrių numatytuosius nustatymus?')) return;
             
             specUnits = [
-                { name: 'PTP', stations: 1, shiftType: '12/6', additionalFTE: 0.25, currentFTE: 3, nearFutureFTE: 3, afterJulyFTE: 3.5, isCritical: false },
-                { name: 'RDPKP', stations: 1, shiftType: '12/6', additionalFTE: 0, currentFTE: 2, nearFutureFTE: 2.25, afterJulyFTE: 2.5, isCritical: false }
+                { name: 'PTP', staffType: 'Gydytojai', stations: 1, shiftType: '12/6', additionalFTE: 0.25, manualRequired: null, currentFTE: 3, nearFutureFTE: 3, afterJulyFTE: 3.5, isCritical: false },
+                { name: 'RDPKP', staffType: 'Slaugytojai', stations: 1, shiftType: '12/6', additionalFTE: 0, manualRequired: null, currentFTE: 2, nearFutureFTE: 2.25, afterJulyFTE: 2.5, isCritical: false }
             ];
             updateAll();
             showToast('🔄 Atkurti numatytieji nustatymai', 'success');
         }
 
         function clearMainAdditional() {
-            mainUnits.forEach(unit => unit.additionalFTE = 0);
+            mainUnits.forEach(unit => {
+                unit.additionalFTE = 0;
+            });
             updateAll();
             showToast('🧹 Išvalyti papildomi FTE', 'success');
         }
 
         function clearSpecAdditional() {
-            specUnits.forEach(unit => unit.additionalFTE = 0);
+            specUnits.forEach(unit => {
+                unit.additionalFTE = 0;
+            });
             updateAll();
             showToast('🧹 Išvalyti papildomi FTE', 'success');
         }
 
         // Export functions
         function exportToCSV() {
-            let csv = 'ITU Personalo Ataskaita v4.0\n';
+            let csv = 'ITU Personalo Ataskaita v5.0\n';
             csv += `Data: ${new Date().toLocaleString('lt-LT')}\n\n`;
             
             csv += 'PAGRINDINIAI ITS SKYRIAI\n';
-            csv += 'Skyrius,Postai,Pamaina,Bazė FTE,Papild.,Reikia,Turimi,Artimu metu,Po liepos,Skirtumas,Gap %,Prioritetas,Kritinis\n';
+            csv += 'Skyrius,Tipas,Postai,Pamaina,Bazė FTE,Papild.,Reikia,Rankinis,Turimi,Artimu metu,Po liepos,Skirtumas,Gap %,Prioritetas,Kritinis\n';
             
             mainUnits.forEach(unit => {
                 const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
-                csv += `${unit.name},${unit.stations},${unit.shiftType},${baseFTEPerStation},`;
+                csv += `${unit.name},${unit.staffType},${unit.stations},${unit.shiftType},${baseFTEPerStation},`;
                 csv += `${unit.additionalFTE.toFixed(2)},${unit.totalRequired.toFixed(2)},`;
+                csv += `${unit.isManualRequired ? 'Taip' : 'Ne'},`;
                 csv += `${unit.currentFTE.toFixed(2)},${(unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
                 csv += `${(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
                 csv += `${unit.gap.toFixed(2)},${unit.gapPercentage.toFixed(1)}%,`;
@@ -1785,12 +1941,13 @@
             });
             
             csv += '\nSPECIALIZUOTI SKYRIAI\n';
-            csv += 'Skyrius,Postai,Pamaina,Bazė FTE,Papild.,Reikia,Turimi,Artimu metu,Po liepos,Skirtumas,Gap %,Prioritetas,Kritinis\n';
+            csv += 'Skyrius,Tipas,Postai,Pamaina,Bazė FTE,Papild.,Reikia,Rankinis,Turimi,Artimu metu,Po liepos,Skirtumas,Gap %,Prioritetas,Kritinis\n';
             
             specUnits.forEach(unit => {
                 const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
-                csv += `${unit.name},${unit.stations},${unit.shiftType},${baseFTEPerStation},`;
+                csv += `${unit.name},${unit.staffType},${unit.stations},${unit.shiftType},${baseFTEPerStation},`;
                 csv += `${unit.additionalFTE.toFixed(2)},${unit.totalRequired.toFixed(2)},`;
+                csv += `${unit.isManualRequired ? 'Taip' : 'Ne'},`;
                 csv += `${unit.currentFTE.toFixed(2)},${(unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
                 csv += `${(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
                 csv += `${unit.gap.toFixed(2)},${unit.gapPercentage.toFixed(1)}%,`;
@@ -1801,7 +1958,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ITU_personalo_planas_v4_${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = `ITU_personalo_planas_v5_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             URL.revokeObjectURL(url);
             
@@ -1809,32 +1966,46 @@
         }
 
         function exportPlanningReport() {
-            let report = `ITU PERSONALO PLANAVIMO ATASKAITA v4.0\n`;
+            let report = `ITU PERSONALO PLANAVIMO ATASKAITA v5.0\n`;
             report += `Sugeneruota: ${new Date().toLocaleString('lt-LT')}\n`;
             report += `${'='.repeat(60)}\n\n`;
             
             const allUnits = [...mainUnits, ...specUnits];
             
-            report += `PLANAVIMO SUVESTINĖ\n`;
-            report += `${'-'.repeat(40)}\n\n`;
+            // Group by staff type
+            const byType = {
+                'Gydytojai': [],
+                'Slaugytojai': [],
+                'Padėjėjai': []
+            };
             
-            allUnits.forEach((unit, index) => {
-                report += `${index + 1}. ${unit.name}\n`;
-                report += `   Postai: ${unit.stations}\n`;
-                report += `   Reikalingi FTE: ${unit.totalRequired.toFixed(2)}\n`;
-                report += `   Dabartiniai FTE: ${unit.currentFTE.toFixed(2)}\n`;
-                report += `   Dabartinis skirtumas: ${unit.gap.toFixed(2)} (${unit.gapPercentage.toFixed(1)}%)\n`;
-                report += `   --- Planavimas ---\n`;
-                report += `   Artimu metu FTE: ${(unit.nearFutureFTE || unit.currentFTE).toFixed(2)}\n`;
-                report += `   Po liepos FTE: ${(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE).toFixed(2)}\n`;
-                report += `   Planuojamas skirtumas po liepos: ${unit.afterJulyGap.toFixed(2)}\n\n`;
+            allUnits.forEach(unit => {
+                if (byType[unit.staffType]) {
+                    byType[unit.staffType].push(unit);
+                }
+            });
+            
+            Object.keys(byType).forEach(type => {
+                if (byType[type].length > 0) {
+                    report += `\n${type.toUpperCase()}\n`;
+                    report += `${'-'.repeat(40)}\n`;
+                    
+                    byType[type].forEach(unit => {
+                        report += `${unit.name}:\n`;
+                        report += `   Postai: ${unit.stations}, Pamaina: ${unit.shiftType}\n`;
+                        report += `   Reikalingi FTE: ${unit.totalRequired.toFixed(2)} ${unit.isManualRequired ? '(Rankinis)' : '(Apskaičiuotas)'}\n`;
+                        report += `   Dabartiniai FTE: ${unit.currentFTE.toFixed(2)}\n`;
+                        report += `   Skirtumas: ${unit.gap.toFixed(2)} (${unit.gapPercentage.toFixed(1)}%)\n`;
+                        report += `   Planavimas: ${(unit.nearFutureFTE || unit.currentFTE).toFixed(2)} → ${(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE).toFixed(2)}\n\n`;
+                    });
+                }
             });
             
             const blob = new Blob([report], { type: 'text/plain;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `planavimo_ataskaita_v4_${new Date().toISOString().split('T')[0]}.txt`;
+            a.download = `planavimo_ataskaita_v5_${new Date().toISOString().split('T')[0]}.txt`;
             a.click();
             URL.revokeObjectURL(url);
             
@@ -1843,7 +2014,7 @@
 
         function saveConfiguration() {
             const config = {
-                version: '4.0',
+                version: '5.0',
                 mainUnits: mainUnits,
                 specUnits: specUnits
             };
@@ -1852,7 +2023,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ITU_config_v4_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `ITU_config_v5_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
             
@@ -1920,7 +2091,7 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             updateAll();
-            showToast('🚀 ITU Personalo Skaičiuoklė v4.0 paruošta', 'info');
+            showToast('🚀 ITU Personalo Skaičiuoklė v5.0 paruošta', 'info');
         });
 
         // Also run immediately if DOM is already loaded
