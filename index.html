@@ -18,6 +18,7 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
+            --info: #3b82f6;  /* Blue color for zero values */
             --dark: #1e293b;
             --gray: #64748b;
             --light: #f8fafc;
@@ -180,6 +181,7 @@
         .stat-value.positive { color: var(--success); }
         .stat-value.negative { color: var(--danger); }
         .stat-value.warning { color: var(--warning); }
+        .stat-value.neutral { color: var(--info); }
 
         /* Staff Type Badges */
         .staff-type-badge {
@@ -587,6 +589,12 @@
             background: rgba(34, 197, 94, 0.15);
             color: #4ade80;
             border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .gap-zero {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         /* Chart Section */
@@ -1287,6 +1295,8 @@
             units.forEach((unit, index) => {
                 const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
                 const isShortage = unit.gap < 0;
+                const isSurplus = unit.gap > 0;
+                const isZero = Math.abs(unit.gap) < 0.001; // Check if effectively zero
                 
                 const row = tbody.insertRow();
                 row.innerHTML = `
@@ -1348,12 +1358,12 @@
                                onchange="updateUnit('${prefix}', ${index}, 'afterJulyFTE', this.value)">
                     </td>
                     <td class="col-gap">
-                        <span class="gap-badge ${isShortage ? 'gap-shortage' : 'gap-surplus'}">
-                            ${unit.gap >= 0 ? '+' : ''}${unit.gap.toFixed(2)}
+                        <span class="gap-badge ${isZero ? 'gap-zero' : (isShortage ? 'gap-shortage' : 'gap-surplus')}">
+                            ${isZero ? '0.00' : ((unit.gap >= 0 ? '+' : '') + unit.gap.toFixed(2))}
                         </span>
                     </td>
-                    <td class="col-gap-percent" style="font-weight: 600; color: ${isShortage ? '#f87171' : '#4ade80'};">
-                        ${unit.gapPercentage >= 0 ? '+' : ''}${unit.gapPercentage.toFixed(1)}%
+                    <td class="col-gap-percent" style="font-weight: 600; color: ${isZero ? '#60a5fa' : (isShortage ? '#f87171' : '#4ade80')};">
+                        ${isZero ? '0.0%' : ((unit.gapPercentage >= 0 ? '+' : '') + unit.gapPercentage.toFixed(1) + '%')}
                     </td>
                     <td class="col-priority">
                         ${unit.priority ? 
@@ -1376,6 +1386,8 @@
             
             const totalGap = totalCurrent - totalRequired;
             const totalGapPercent = totalRequired > 0 ? (totalGap / totalRequired) * 100 : 0;
+            const isZeroGap = Math.abs(totalGap) < 0.001;
+            const isZeroPercent = Math.abs(totalGapPercent) < 0.001;
             
             document.getElementById(`${prefix}TotalStations`).textContent = totalStations;
             document.getElementById(`${prefix}TotalAdditional`).textContent = totalAdditional.toFixed(2);
@@ -1385,12 +1397,12 @@
             document.getElementById(`${prefix}TotalAfterJuly`).textContent = totalAfterJuly.toFixed(2);
             
             const gapEl = document.getElementById(`${prefix}TotalGap`);
-            gapEl.textContent = (totalGap >= 0 ? '+' : '') + totalGap.toFixed(2);
-            gapEl.style.color = totalGap < 0 ? '#f87171' : '#4ade80';
+            gapEl.textContent = isZeroGap ? '0.00' : ((totalGap >= 0 ? '+' : '') + totalGap.toFixed(2));
+            gapEl.style.color = isZeroGap ? '#60a5fa' : (totalGap < 0 ? '#f87171' : '#4ade80');
             
             const gapPercentEl = document.getElementById(`${prefix}TotalGapPercent`);
-            gapPercentEl.textContent = (totalGapPercent >= 0 ? '+' : '') + totalGapPercent.toFixed(1) + '%';
-            gapPercentEl.style.color = totalGap < 0 ? '#f87171' : '#4ade80';
+            gapPercentEl.textContent = isZeroPercent ? '0.0%' : ((totalGapPercent >= 0 ? '+' : '') + totalGapPercent.toFixed(1) + '%');
+            gapPercentEl.style.color = isZeroGap ? '#60a5fa' : (totalGap < 0 ? '#f87171' : '#4ade80');
         }
 
         function updateDashboard() {
@@ -1428,6 +1440,7 @@
             });
             
             const currentGap = totalCurrent - totalRequired;
+            const isZeroBalance = Math.abs(currentGap) < 0.001;
             
             document.getElementById('totalUnits').textContent = allUnits.length;
             document.getElementById('doctorFTE').textContent = doctorFTE.toFixed(2);
@@ -1438,8 +1451,8 @@
             document.getElementById('shortageUnits').textContent = shortageCount;
             
             const balanceEl = document.getElementById('totalBalance');
-            balanceEl.textContent = (currentGap >= 0 ? '+' : '') + currentGap.toFixed(2);
-            balanceEl.className = currentGap < 0 ? 'stat-value negative' : 'stat-value positive';
+            balanceEl.textContent = isZeroBalance ? '0.00' : ((currentGap >= 0 ? '+' : '') + currentGap.toFixed(2));
+            balanceEl.className = isZeroBalance ? 'stat-value neutral' : (currentGap < 0 ? 'stat-value negative' : 'stat-value positive');
         }
 
         // Chart Drawing Functions
@@ -1570,10 +1583,19 @@
                 ctx.fillText(unit.staffType, x, height - 15);
                 
                 // Gap indicator
-                if (unit.gap < 0) {
+                const isZeroGap = Math.abs(unit.gap) < 0.001;
+                if (isZeroGap) {
+                    ctx.fillStyle = '#60a5fa';
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.fillText('0.00', x, height - 45);
+                } else if (unit.gap < 0) {
                     ctx.fillStyle = '#ef4444';
                     ctx.font = 'bold 11px sans-serif';
                     ctx.fillText(`${unit.gap.toFixed(1)}`, x, height - 45);
+                } else {
+                    ctx.fillStyle = '#10b981';
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.fillText(`+${unit.gap.toFixed(1)}`, x, height - 45);
                 }
             });
             
@@ -1690,8 +1712,9 @@
                 // Draw requirement zones
                 const requiredHeight = (unit.totalRequired / maxFTE) * chartHeight;
                 
-                // Highlight gap area
-                if (unit.gap < 0) {
+                // Highlight gap area only if not zero
+                const isZeroGap = Math.abs(unit.gap) < 0.001;
+                if (!isZeroGap && unit.gap < 0) {
                     const gapY = padding.top + chartHeight - requiredHeight;
                     const gapHeight = requiredHeight - currentHeight;
                     
@@ -1730,7 +1753,10 @@
                 
                 // Gap value
                 ctx.font = 'bold 14px sans-serif';
-                if (unit.gap < 0) {
+                if (isZeroGap) {
+                    ctx.fillStyle = '#60a5fa';
+                    ctx.fillText('Gap: 0.0', x, height - 45);
+                } else if (unit.gap < 0) {
                     ctx.fillStyle = '#ef4444';
                     ctx.fillText(`Gap: ${unit.gap.toFixed(1)}`, x, height - 45);
                 } else {
