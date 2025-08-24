@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITU Personalo Skaičiuoklė v5.0 - Enhanced</title>
+    <title>ITU Personalo Skaičiuoklė v5.1 - Tikslus personalo planavimas</title>
     <style>
+        /* Modern CSS Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -12,61 +13,56 @@
         }
 
         :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --secondary: #8b5cf6;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --info: #3b82f6;  /* Blue color for zero values */
+            --info: #06b6d4;
             --dark: #1e293b;
             --gray: #64748b;
-            --light: #f8fafc;
+            --light-gray: #f1f5f9;
             --white: #ffffff;
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            --card-bg: rgba(255, 255, 255, 0.06);
-            --card-hover: rgba(255, 255, 255, 0.1);
-            --border: rgba(255, 255, 255, 0.08);
-            --text: #e2e8f0;
-            --text-muted: #94a3b8;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+            --border: #e2e8f0;
             
-            /* Chart Colors */
-            --min-color: #f97316;
-            --max-color: #dc2626;
-            --current-color: #3b82f6;
-            --plan-near-color: #8b5cf6;
-            --plan-july-color: #10b981;
-            
-            /* Staff Type Colors */
+            /* Staff type colors */
             --doctor-color: #3b82f6;
             --nurse-color: #8b5cf6;
-            --assistant-color: #fb923c;
+            --assistant-color: #f97316;
+            
+            /* Gap colors - new scheme */
+            --gap-zero: #10b981;
+            --gap-shortage: #3b82f6;
+            --gap-surplus: #ef4444;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--dark);
             line-height: 1.6;
+            min-height: 100vh;
         }
 
         .container {
             max-width: 1800px;
             margin: 0 auto;
-            padding: 1.5rem;
+            padding: 1rem;
         }
 
-        /* Header */
+        /* Header Styles */
         .header {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: white;
             padding: 2rem;
+            border-radius: 16px;
             margin-bottom: 2rem;
-            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -79,60 +75,63 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
-            animation: pulse 20s ease-in-out infinite;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: headerPulse 15s ease-in-out infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.3; }
+        @keyframes headerPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
         }
 
-        h1 {
-            font-size: 2rem;
+        .header h1 {
+            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--white);
             margin-bottom: 0.5rem;
             position: relative;
             z-index: 1;
         }
 
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 1rem;
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
             position: relative;
             z-index: 1;
         }
 
         .version-badge {
             display: inline-block;
-            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
+            background: var(--success);
             color: white;
-            padding: 4px 12px;
+            padding: 0.25rem 0.75rem;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.875rem;
             font-weight: 600;
-            margin-left: 12px;
-            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+            margin-left: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* Dashboard */
+        /* Dashboard Styles */
         .dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
         .stat-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
+            background: var(--white);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.25rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .stat-card::before {
@@ -141,113 +140,69 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .stat-card:hover {
-            background: var(--card-hover);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
+            height: 4px;
+            background: var(--primary);
+            border-radius: 12px 12px 0 0;
         }
 
         .stat-icon {
-            font-size: 1.5rem;
+            font-size: 2rem;
             margin-bottom: 0.5rem;
             opacity: 0.8;
         }
 
         .stat-label {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
+            color: var(--gray);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
         }
 
         .stat-value {
-            color: var(--white);
-            font-size: 1.75rem;
+            font-size: 2rem;
             font-weight: 700;
-            line-height: 1;
+            color: var(--dark);
         }
 
-        .stat-value.positive { color: var(--success); }
-        .stat-value.negative { color: var(--danger); }
+        .stat-value.zero { color: var(--gap-zero); }
+        .stat-value.shortage { color: var(--gap-shortage); }
+        .stat-value.surplus { color: var(--gap-surplus); }
         .stat-value.warning { color: var(--warning); }
-        .stat-value.neutral { color: var(--info); }
 
-        /* Staff Type Badges */
-        .staff-type-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .staff-type-gydytojai {
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-
-        .staff-type-slaugytojai {
-            background: rgba(139, 92, 246, 0.2);
-            color: #a78bfa;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-        }
-
-        .staff-type-padejejai {
-            background: rgba(251, 146, 60, 0.2);
-            color: #fb923c;
-            border: 1px solid rgba(251, 146, 60, 0.3);
-        }
-
-        /* Tabs */
+        /* Tab Styles */
         .tabs {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            background: var(--card-bg);
+            gap: 0.25rem;
+            margin-bottom: 2rem;
+            background: var(--white);
             padding: 0.5rem;
             border-radius: 12px;
+            box-shadow: var(--shadow);
             border: 1px solid var(--border);
-            flex-wrap: wrap;
         }
 
         .tab {
             flex: 1;
-            min-width: 120px;
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 1rem;
             background: transparent;
             border: none;
-            color: var(--text-muted);
-            font-size: 0.95rem;
+            border-radius: 8px;
             font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            border-radius: 8px;
-            position: relative;
+            color: var(--gray);
         }
 
         .tab.active {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: var(--primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
         }
 
         .tab:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text);
+            background: var(--light-gray);
+            color: var(--dark);
         }
 
         .tab-content {
@@ -264,449 +219,368 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Calculator Sections */
-        .calculators-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
+        /* Calculator Section Styles */
         .calculator-section {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
+            background: var(--white);
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 1.5rem;
-            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
         }
 
-        .calculator-header {
+        .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1rem;
             padding-bottom: 1rem;
             border-bottom: 2px solid var(--border);
         }
 
-        .calculator-title {
+        .section-title {
             font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--white);
+            font-weight: 700;
+            color: var(--dark);
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
 
-        .calculator-actions {
+        .section-actions {
             display: flex;
             gap: 0.5rem;
         }
 
-        /* Buttons */
+        /* Button Styles */
         .btn {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            border: none;
-            padding: 0.625rem 1.25rem;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn:hover::before {
-            width: 300px;
-            height: 300px;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            white-space: nowrap;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-1px);
         }
 
-        .btn:active {
-            transform: translateY(0);
+        .btn-primary { 
+            background: var(--primary); 
+            color: white; 
+        }
+        .btn-primary:hover { 
+            background: var(--primary-hover); 
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-success { 
+            background: var(--success); 
+            color: white; 
+        }
+        .btn-success:hover { 
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-warning { 
+            background: var(--warning); 
+            color: white; 
+        }
+
+        .btn-danger { 
+            background: var(--danger); 
+            color: white; 
+        }
+
+        .btn-secondary { 
+            background: var(--light-gray); 
+            color: var(--dark); 
+            border: 1px solid var(--border);
         }
 
         .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8rem;
         }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger) 0%, #f87171 100%);
-        }
-
-        /* Tables */
+        /* Table Styles */
         .table-container {
             overflow-x: auto;
-            margin: 1rem 0;
             border-radius: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85rem;
+            font-size: 0.875rem;
+            background: var(--white);
+        }
+
+        th, td {
+            padding: 0.75rem 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
         }
 
         th {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
-            color: var(--text);
-            padding: 0.875rem 0.5rem;
-            text-align: left;
+            background: var(--light-gray);
             font-weight: 600;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            color: var(--dark);
             position: sticky;
             top: 0;
             z-index: 10;
-            backdrop-filter: blur(10px);
-            white-space: nowrap;
         }
 
-        td {
-            padding: 0.625rem 0.5rem;
-            color: var(--text);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            transition: background 0.2s ease;
-        }
-
-        tr:hover td {
-            background: rgba(255, 255, 255, 0.03);
+        tr:hover {
+            background: #f8fafc;
         }
 
         .totals-row {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(139, 92, 246, 0.08));
+            background: var(--light-gray) !important;
             font-weight: 700;
+            border-top: 2px solid var(--primary);
         }
 
-        .totals-row td {
-            padding: 1rem 0.5rem;
-            border-top: 2px solid rgba(59, 130, 246, 0.3);
-            font-size: 0.9rem;
-        }
-
-        /* Inputs */
+        /* Input Styles */
         input, select {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 6px;
             padding: 0.5rem 0.75rem;
-            color: var(--white);
-            font-size: 0.85rem;
+            font-size: 0.875rem;
             transition: all 0.3s ease;
             width: 100%;
         }
 
         input:focus, select:focus {
             outline: none;
-            background: rgba(255, 255, 255, 0.12);
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         input[type="number"] {
             text-align: center;
         }
 
-        select option {
-            background: var(--dark);
-            color: var(--white);
-        }
-
         input[type="checkbox"] {
             width: 18px;
             height: 18px;
-            cursor: pointer;
             accent-color: var(--primary);
         }
 
-        /* Manual override styling */
+        /* Staff Type Styling */
+        .staff-type-doctor {
+            background: rgba(59, 130, 246, 0.1) !important;
+            border-left: 4px solid var(--doctor-color) !important;
+        }
+
+        .staff-type-nurse {
+            background: rgba(139, 92, 246, 0.1) !important;
+            border-left: 4px solid var(--nurse-color) !important;
+        }
+
+        .staff-type-assistant {
+            background: rgba(249, 115, 22, 0.1) !important;
+            border-left: 4px solid var(--assistant-color) !important;
+        }
+
+        /* Required Field Styling */
         .required-cell {
             position: relative;
             padding: 0 !important;
-        }
-
-        .required-input {
-            position: relative;
-            display: flex;
-            align-items: center;
-            width: 100%;
         }
 
         .required-value {
             width: 100%;
             text-align: center;
             font-weight: 600;
-            padding: 0.5rem;
+            padding: 0.75rem 0.5rem;
             cursor: pointer;
+            border-radius: 6px;
             transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
 
         .required-value.calculated {
             background: rgba(251, 191, 36, 0.1);
-            border: 1px solid rgba(251, 191, 36, 0.2);
-            color: #fbbf24;
+            border-color: rgba(251, 191, 36, 0.3);
+            color: #d97706;
         }
 
         .required-value.manual {
-            background: rgba(139, 92, 246, 0.15);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+            color: #7c3aed;
         }
 
         .required-value:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(37, 99, 235, 0.1);
+            border-color: var(--primary);
         }
 
         .manual-indicator {
             position: absolute;
             top: 2px;
             right: 2px;
-            font-size: 0.65rem;
-            padding: 1px 4px;
+            background: var(--nurse-color);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 4px;
             border-radius: 4px;
-            background: rgba(139, 92, 246, 0.3);
-            color: #a78bfa;
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        /* Column widths */
-        .col-name { width: 100px; }
-        .col-type { width: 90px; }
-        .col-stations { width: 60px; }
-        .col-shift { width: 70px; }
-        .col-base { width: 60px; text-align: center; }
-        .col-min { width: 70px; }
-        .col-additional { width: 60px; }
-        .col-required { width: 80px; text-align: center; font-weight: 600; }
-        .col-current { width: 70px; }
-        .col-near-future { width: 80px; }
-        .col-after-july { width: 80px; }
-        .col-gap { width: 70px; text-align: center; }
-        .col-gap-percent { width: 60px; text-align: center; }
-        .col-priority { width: 50px; text-align: center; }
-        .col-critical { width: 40px; text-align: center; }
-
-        /* Planning columns styling */
-        .planning-input {
-            background: rgba(34, 197, 94, 0.1) !important;
-            border-color: rgba(34, 197, 94, 0.3) !important;
-        }
-
-        .planning-input:focus {
-            background: rgba(34, 197, 94, 0.15) !important;
-            border-color: var(--success) !important;
-        }
-
-        /* Badges */
-        .priority-badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: rgba(139, 92, 246, 0.2);
-            color: #a78bfa;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .priority-1 {
-            background: rgba(239, 68, 68, 0.2);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            animation: pulse-red 2s infinite;
-        }
-
-        @keyframes pulse-red {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .priority-2 {
-            background: rgba(251, 146, 60, 0.2);
-            color: #fb923c;
-            border: 1px solid rgba(251, 146, 60, 0.3);
-        }
-
-        .priority-3 {
-            background: rgba(250, 204, 21, 0.2);
-            color: #facc15;
-            border: 1px solid rgba(250, 204, 21, 0.3);
-        }
-
+        /* Gap Badge Styles */
         .gap-badge {
-            padding: 0.3rem 0.6rem;
-            border-radius: 8px;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
             font-weight: 600;
             font-size: 0.8rem;
-            display: inline-block;
-        }
-
-        .gap-shortage {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .gap-surplus {
-            background: rgba(34, 197, 94, 0.15);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.2);
+            text-align: center;
         }
 
         .gap-zero {
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--gap-zero);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .gap-shortage {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--gap-shortage);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .gap-surplus {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--gap-surplus);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Priority Badge */
+        .priority-badge {
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: var(--warning);
+            color: white;
         }
 
         /* Chart Section */
         .chart-section {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
+            background: var(--white);
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 1.5rem;
-            margin-top: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
         }
 
         .chart-container {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
             margin-top: 1rem;
-            position: relative;
         }
 
-        .charts-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        @media (min-width: 1200px) {
-            .charts-grid {
-                grid-template-columns: 1fr 1fr;
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            
+            .quick-actions {
+                justify-content: center;
             }
         }
 
-        .chart-legend {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 12px;
-            border-radius: 3px;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.25rem;
-        }
-
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-            cursor: help;
-        }
-
-        .tooltip:hover::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--dark);
-            color: var(--white);
-            padding: 0.5rem 0.75rem;
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--white);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            z-index: 1000;
+            padding: 1rem 1.5rem;
             box-shadow: var(--shadow-lg);
-            margin-bottom: 0.5rem;
-            animation: fadeIn 0.2s ease;
+            z-index: 1000;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
         }
 
-        /* Info Box */
-        .info-box {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
+        .toast.success {
+            border-left: 4px solid var(--success);
         }
 
-        .info-box h4 {
-            color: #60a5fa;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .toast.error {
+            border-left: 4px solid var(--danger);
         }
 
-        .info-box ul {
-            color: #cbd5e1;
-            margin-left: 1.5rem;
-            line-height: 1.8;
+        .toast.info {
+            border-left: 4px solid var(--info);
         }
 
-        .info-box li {
-            margin: 0.75rem 0;
-            font-size: 0.9rem;
+        .toast.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Planning Input Styling */
+        .planning-input {
+            background: rgba(16, 185, 129, 0.05) !important;
+            border-color: rgba(16, 185, 129, 0.3) !important;
+        }
+
+        .planning-input:focus {
+            border-color: var(--success) !important;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
         }
 
         /* Export Section */
@@ -715,104 +589,62 @@
             justify-content: center;
             gap: 1rem;
             margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
+            padding: 2rem;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
             flex-wrap: wrap;
         }
 
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            color: white;
-            padding: 1rem 1.5rem;
+        /* Help Section */
+        .help-card {
+            background: var(--white);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            z-index: 10000;
-            max-width: 350px;
-            animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .help-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateY(100px) scale(0.9);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
+        .help-card ul {
+            color: var(--gray);
+            margin-left: 1.5rem;
+            line-height: 1.8;
         }
 
-        .toast.info {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        .help-card li {
+            margin: 0.5rem 0;
         }
 
-        .toast.success {
-            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
-        }
-
-        .toast.warning {
-            background: linear-gradient(135deg, var(--warning) 0%, #fb923c 100%);
-        }
-
-        .toast.error {
-            background: linear-gradient(135deg, var(--danger) 0%, #f87171 100%);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .dashboard {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.75rem;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            .stat-value {
-                font-size: 1.5rem;
-            }
-            
-            .tabs {
-                flex-direction: column;
-            }
-            
-            .tab {
-                width: 100%;
-            }
-        }
-
-        @media print {
-            body {
-                background: white;
-                color: black;
-            }
-            
-            .calculator-actions, .export-section, .quick-actions, .tabs {
-                display: none !important;
-            }
-        }
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .font-bold { font-weight: 700; }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>ITU Personalo Skaičiuoklė <span class="version-badge">v5.0</span></h1>
-            <p class="subtitle">Universali personalo planavimo sistema su rankiniu REIKIA koregavimu</p>
+            <h1>ITU Personalo Skaičiuoklė <span class="version-badge">v5.1</span></h1>
+            <p class="subtitle">Pažangus intensyviosios terapijos personalo planavimo įrankis su 3 skaitmenų tikslumu</p>
         </div>
 
-        <!-- Dashboard Overview -->
+        <!-- Dashboard -->
         <div class="dashboard">
             <div class="stat-card">
                 <div class="stat-icon">🏥</div>
@@ -822,32 +654,32 @@
             <div class="stat-card">
                 <div class="stat-icon">👨‍⚕️</div>
                 <div class="stat-label">Gydytojų etatai</div>
-                <div class="stat-value" id="doctorFTE">0.00</div>
+                <div class="stat-value" id="doctorFTE">0.000</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">👩‍⚕️</div>
                 <div class="stat-label">Slaugytojų etatai</div>
-                <div class="stat-value" id="nurseFTE">0.00</div>
+                <div class="stat-value" id="nurseFTE">0.000</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🤝</div>
                 <div class="stat-label">Padėjėjų etatai</div>
-                <div class="stat-value" id="assistantFTE">0.00</div>
+                <div class="stat-value" id="assistantFTE">0.000</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🎯</div>
                 <div class="stat-label">Reikalingi etatai</div>
-                <div class="stat-value" id="totalRequired">0.00</div>
+                <div class="stat-value" id="totalRequired">0.000</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">👥</div>
                 <div class="stat-label">Dabartiniai etatai</div>
-                <div class="stat-value" id="totalCurrent">0.00</div>
+                <div class="stat-value" id="totalCurrent">0.000</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">⚖️</div>
-                <div class="stat-label">Dabartinis balansas</div>
-                <div class="stat-value" id="totalBalance">0.00</div>
+                <div class="stat-label">Balansas</div>
+                <div class="stat-value" id="totalBalance">0.000</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">⚠️</div>
@@ -858,315 +690,293 @@
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab active" onclick="switchTab('calculators')">📊 Skaičiuoklės</button>
-            <button class="tab" onclick="switchTab('planning')">📈 Planavimo grafikai</button>
-            <button class="tab" onclick="switchTab('help')">ℹ️ Pagalba</button>
+            <button class="tab active" onclick="switchTab('calculator')">📊 Skaičiuoklė</button>
+            <button class="tab" onclick="switchTab('analysis')">📈 Analizė</button>
+            <button class="tab" onclick="switchTab('help')">❓ Pagalba</button>
         </div>
 
-        <!-- Calculators Tab -->
-        <div id="calculators-tab" class="tab-content active">
-            <div class="calculators-grid">
-                <!-- Main ICU Units Calculator -->
-                <div class="calculator-section">
-                    <div class="calculator-header">
-                        <div class="calculator-title">
-                            <span style="font-size: 1.5rem;">🏥</span> 
-                            Pagrindiniai ITS skyriai
-                        </div>
-                        <div class="calculator-actions">
-                            <button class="btn btn-sm btn-success" onclick="addMainUnit()" title="Pridėti skyrių">➕</button>
-                            <button class="btn btn-sm btn-danger" onclick="removeMainUnit()" title="Pašalinti skyrių">➖</button>
-                        </div>
+        <!-- Calculator Tab -->
+        <div id="calculator-tab" class="tab-content active">
+            <!-- Main Units Section -->
+            <div class="calculator-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <span style="font-size: 1.5em;">🏥</span>
+                        Pagrindiniai ITS skyriai
                     </div>
-
-                    <div class="quick-actions">
-                        <button class="btn btn-sm btn-secondary" onclick="resetMainToDefaults()">🔄 Atkurti</button>
-                        <button class="btn btn-sm btn-secondary" onclick="clearMainAdditional()">🧹 Valyti papild.</button>
-                        <button class="btn btn-sm btn-secondary" onclick="clearMainManual()">🔢 Valyti rankinius</button>
-                        <button class="btn btn-sm btn-secondary" onclick="autoConfigureMain()">🤖 Auto konfig.</button>
-                    </div>
-
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Skyrius</th>
-                                    <th class="tooltip" data-tooltip="Personalo tipas">Tipas</th>
-                                    <th>Postai</th>
-                                    <th>Pamaina</th>
-                                    <th class="tooltip" data-tooltip="Baziniai FTE vienam postui">Bazė</th>
-                                    <th class="tooltip" data-tooltip="Papildomi FTE">Papild.</th>
-                                    <th class="tooltip" data-tooltip="Reikalingi FTE (spustelėkite redaguoti)">Reikia</th>
-                                    <th>Turimi</th>
-                                    <th class="tooltip" data-tooltip="FTE po darbuotojų krūvio pakeitimų">Artimu metu</th>
-                                    <th class="tooltip" data-tooltip="FTE kai rezidentai taps gydytojais">Po liepos</th>
-                                    <th class="tooltip" data-tooltip="Skirtumas tarp turimų ir reikalingų">Skirtumas</th>
-                                    <th class="tooltip" data-tooltip="Procentinis skirtumas">Gap %</th>
-                                    <th>#</th>
-                                    <th class="tooltip" data-tooltip="Kritinis skyrius">⚠</th>
-                                </tr>
-                            </thead>
-                            <tbody id="mainUnitsBody">
-                            </tbody>
-                            <tfoot>
-                                <tr class="totals-row">
-                                    <td>VISO:</td>
-                                    <td>-</td>
-                                    <td id="mainTotalStations">0</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td id="mainTotalAdditional">0.00</td>
-                                    <td id="mainTotalRequired">0.00</td>
-                                    <td id="mainTotalCurrent">0.00</td>
-                                    <td id="mainTotalNearFuture">0.00</td>
-                                    <td id="mainTotalAfterJuly">0.00</td>
-                                    <td id="mainTotalGap">0.00</td>
-                                    <td id="mainTotalGapPercent">0%</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                    <div class="section-actions">
+                        <button class="btn btn-success btn-sm" onclick="addMainUnit()">➕ Pridėti</button>
+                        <button class="btn btn-danger btn-sm" onclick="removeMainUnit()">➖ Šalinti</button>
                     </div>
                 </div>
 
-                <!-- Specialized Units Calculator -->
-                <div class="calculator-section">
-                    <div class="calculator-header">
-                        <div class="calculator-title">
-                            <span style="font-size: 1.5rem;">🏢</span>
-                            Specializuoti skyriai
-                        </div>
-                        <div class="calculator-actions">
-                            <button class="btn btn-sm btn-success" onclick="addSpecUnit()" title="Pridėti skyrių">➕</button>
-                            <button class="btn btn-sm btn-danger" onclick="removeSpecUnit()" title="Pašalinti skyrių">➖</button>
-                        </div>
-                    </div>
+                <div class="quick-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="resetMainDefaults()">🔄 Atkurti</button>
+                    <button class="btn btn-secondary btn-sm" onclick="clearMainAdditional()">🧹 Valyti papild.</button>
+                    <button class="btn btn-secondary btn-sm" onclick="clearMainManual()">🔢 Valyti rankinius</button>
+                    <button class="btn btn-secondary btn-sm" onclick="autoConfigureMain()">🤖 Auto konfig.</button>
+                </div>
 
-                    <div class="quick-actions">
-                        <button class="btn btn-sm btn-secondary" onclick="resetSpecToDefaults()">🔄 Atkurti</button>
-                        <button class="btn btn-sm btn-secondary" onclick="clearSpecAdditional()">🧹 Valyti papild.</button>
-                        <button class="btn btn-sm btn-secondary" onclick="clearSpecManual()">🔢 Valyti rankinius</button>
-                        <button class="btn btn-sm btn-secondary" onclick="autoConfigureSpec()">🤖 Auto konfig.</button>
-                    </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Skyrius</th>
+                                <th>Tipas</th>
+                                <th>Postai</th>
+                                <th>Pamaina</th>
+                                <th>Bazė FTE</th>
+                                <th>Papild. FTE</th>
+                                <th>Reikia FTE</th>
+                                <th>Turimi FTE</th>
+                                <th>Artimi planai</th>
+                                <th>Po liepos</th>
+                                <th>Skirtumas</th>
+                                <th>Gap %</th>
+                                <th>Prioritetas</th>
+                                <th>Kritinis</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mainUnitsBody"></tbody>
+                        <tfoot>
+                            <tr class="totals-row">
+                                <td><strong>VISO:</strong></td>
+                                <td>-</td>
+                                <td id="mainTotalStations" class="text-center font-bold">0</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td id="mainTotalAdditional" class="text-center font-bold">0.000</td>
+                                <td id="mainTotalRequired" class="text-center font-bold">0.000</td>
+                                <td id="mainTotalCurrent" class="text-center font-bold">0.000</td>
+                                <td id="mainTotalNearFuture" class="text-center font-bold">0.000</td>
+                                <td id="mainTotalAfterJuly" class="text-center font-bold">0.000</td>
+                                <td id="mainTotalGap" class="text-center font-bold">0.000</td>
+                                <td id="mainTotalGapPercent" class="text-center font-bold">0.0%</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
 
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Skyrius</th>
-                                    <th class="tooltip" data-tooltip="Personalo tipas">Tipas</th>
-                                    <th>Postai</th>
-                                    <th>Pamaina</th>
-                                    <th class="tooltip" data-tooltip="Baziniai FTE vienam postui">Bazė</th>
-                                    <th class="tooltip" data-tooltip="Papildomi FTE">Papild.</th>
-                                    <th class="tooltip" data-tooltip="Reikalingi FTE (spustelėkite redaguoti)">Reikia</th>
-                                    <th>Turimi</th>
-                                    <th class="tooltip" data-tooltip="FTE po darbuotojų krūvio pakeitimų">Artimu metu</th>
-                                    <th class="tooltip" data-tooltip="FTE kai rezidentai taps gydytojais">Po liepos</th>
-                                    <th class="tooltip" data-tooltip="Skirtumas tarp turimų ir reikalingų">Skirtumas</th>
-                                    <th class="tooltip" data-tooltip="Procentinis skirtumas">Gap %</th>
-                                    <th>#</th>
-                                    <th class="tooltip" data-tooltip="Kritinis skyrius">⚠</th>
-                                </tr>
-                            </thead>
-                            <tbody id="specUnitsBody">
-                            </tbody>
-                            <tfoot>
-                                <tr class="totals-row">
-                                    <td>VISO:</td>
-                                    <td>-</td>
-                                    <td id="specTotalStations">0</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td id="specTotalAdditional">0.00</td>
-                                    <td id="specTotalRequired">0.00</td>
-                                    <td id="specTotalCurrent">0.00</td>
-                                    <td id="specTotalNearFuture">0.00</td>
-                                    <td id="specTotalAfterJuly">0.00</td>
-                                    <td id="specTotalGap">0.00</td>
-                                    <td id="specTotalGapPercent">0%</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+            <!-- Specialized Units Section -->
+            <div class="calculator-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <span style="font-size: 1.5em;">🏢</span>
+                        Specializuoti skyriai
                     </div>
+                    <div class="section-actions">
+                        <button class="btn btn-success btn-sm" onclick="addSpecUnit()">➕ Pridėti</button>
+                        <button class="btn btn-danger btn-sm" onclick="removeSpecUnit()">➖ Šalinti</button>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="resetSpecDefaults()">🔄 Atkurti</button>
+                    <button class="btn btn-secondary btn-sm" onclick="clearSpecAdditional()">🧹 Valyti papild.</button>
+                    <button class="btn btn-secondary btn-sm" onclick="clearSpecManual()">🔢 Valyti rankinius</button>
+                    <button class="btn btn-secondary btn-sm" onclick="autoConfigureSpec()">🤖 Auto konfig.</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Skyrius</th>
+                                <th>Tipas</th>
+                                <th>Postai</th>
+                                <th>Pamaina</th>
+                                <th>Bazė FTE</th>
+                                <th>Papild. FTE</th>
+                                <th>Reikia FTE</th>
+                                <th>Turimi FTE</th>
+                                <th>Artimi planai</th>
+                                <th>Po liepos</th>
+                                <th>Skirtumas</th>
+                                <th>Gap %</th>
+                                <th>Prioritetas</th>
+                                <th>Kritinis</th>
+                            </tr>
+                        </thead>
+                        <tbody id="specUnitsBody"></tbody>
+                        <tfoot>
+                            <tr class="totals-row">
+                                <td><strong>VISO:</strong></td>
+                                <td>-</td>
+                                <td id="specTotalStations" class="text-center font-bold">0</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td id="specTotalAdditional" class="text-center font-bold">0.000</td>
+                                <td id="specTotalRequired" class="text-center font-bold">0.000</td>
+                                <td id="specTotalCurrent" class="text-center font-bold">0.000</td>
+                                <td id="specTotalNearFuture" class="text-center font-bold">0.000</td>
+                                <td id="specTotalAfterJuly" class="text-center font-bold">0.000</td>
+                                <td id="specTotalGap" class="text-center font-bold">0.000</td>
+                                <td id="specTotalGapPercent" class="text-center font-bold">0.0%</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <!-- Planning Charts Tab -->
-        <div id="planning-tab" class="tab-content">
-            <div class="charts-grid">
-                <!-- Main Departments Chart -->
-                <div class="chart-section">
-                    <h2 style="color: var(--white); font-size: 1.3rem; margin-bottom: 1rem;">📊 Pagrindiniai ITS skyriai - FTE analizė</h2>
-                    
-                    <div class="chart-legend">
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #3b82f6;"></div>
-                            <span>Gydytojai</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #8b5cf6;"></div>
-                            <span>Slaugytojai</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #fb923c;"></div>
-                            <span>Padėjėjai</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #dc2626;"></div>
-                            <span>Reikalingi FTE</span>
-                        </div>
-                    </div>
-
-                    <div class="chart-container">
-                        <canvas id="mainDeptChart" width="600" height="400"></canvas>
-                    </div>
+        <!-- Analysis Tab -->
+        <div id="analysis-tab" class="tab-content">
+            <div class="chart-section">
+                <h2 style="color: var(--primary); margin-bottom: 1rem;">📊 Personalo analizė</h2>
+                <div class="chart-container">
+                    <canvas id="staffChart" width="800" height="400"></canvas>
                 </div>
+            </div>
 
-                <!-- Specialized Departments Chart -->
-                <div class="chart-section">
-                    <h2 style="color: var(--white); font-size: 1.3rem; margin-bottom: 1rem;">📊 Specializuoti skyriai - Gap analizė</h2>
-                    
-                    <div class="chart-legend">
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #3b82f6;"></div>
-                            <span>Gydytojai</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #8b5cf6;"></div>
-                            <span>Slaugytojai</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #fb923c;"></div>
-                            <span>Padėjėjai</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #dc2626;"></div>
-                            <span>Reikalingi FTE</span>
-                        </div>
-                    </div>
-
-                    <div class="chart-container">
-                        <canvas id="specDeptChart" width="600" height="400"></canvas>
-                    </div>
+            <div class="calculator-section">
+                <div class="section-title mb-4">📈 Personalo statistikos</div>
+                <div id="analysisContent">
+                    <p class="text-center text-sm" style="color: var(--gray);">Statistikos duomenys bus rodomi čia po skaičiavimų...</p>
                 </div>
             </div>
         </div>
 
         <!-- Help Tab -->
         <div id="help-tab" class="tab-content">
-            <div class="info-box">
-                <h4>🎯 REIKIA laukas - Naujas funkcionalumas (v5.0)</h4>
+            <div class="help-card">
+                <h3>🎯 Reikia FTE laukas - Pagrindinė funkcija</h3>
                 <ul>
-                    <li><strong>Automatinis skaičiavimas:</strong> REIKIA = (Postai × Bazė) + Papildomi FTE</li>
+                    <li><strong>Automatinis skaičiavimas:</strong> REIKIA = (Postai × Bazė FTE) + Papild. FTE</li>
                     <li><strong>Rankinis koregavimas:</strong> Spustelėkite REIKIA lauką norėdami įvesti savo reikšmę</li>
-                    <li><strong style="color: #fbbf24;">Geltona spalva:</strong> Automatiškai apskaičiuota reikšmė</li>
-                    <li><strong style="color: #a78bfa;">Violetinė spalva:</strong> Rankiniu būdu įvesta reikšmė</li>
-                    <li>Visos analizės (skirtumai, procentai, grafikai) naudoja REIKIA reikšmę</li>
+                    <li><strong style="color: #d97706;">Geltona spalva:</strong> Automatiškai apskaičiuota reikšmė</li>
+                    <li><strong style="color: #7c3aed;">Violetinė spalva:</strong> Rankiniu būdu įvesta reikšmė (žymima "M")</li>
+                    <li>Visos analizės naudoja REIKIA reikšmę skaičiavimams</li>
                 </ul>
             </div>
 
-            <div class="info-box">
-                <h4>👥 Personalo tipų sistema</h4>
+            <div class="help-card">
+                <h3>🎨 Spalvų kodavimo sistema</h3>
                 <ul>
-                    <li><strong style="color: #60a5fa;">Gydytojai:</strong> Medicininis personalas</li>
-                    <li><strong style="color: #a78bfa;">Slaugytojai:</strong> Slaugos personalas</li>
-                    <li><strong style="color: #fb923c;">Padėjėjai:</strong> Pagalbinis personalas</li>
-                    <li>Visi tipai naudoja tą pačią skaičiavimo formulę</li>
-                    <li>Kiekvienas tipas gali turėti rankinį REIKIA koregavimą</li>
+                    <li><strong style="color: var(--gap-zero);">Žalia spalva:</strong> Tobulas balansas (0.000 skirtumas)</li>
+                    <li><strong style="color: var(--gap-shortage);">Mėlyna spalva:</strong> Personalo trūkumas (neigiamas skirtumas)</li>
+                    <li><strong style="color: var(--gap-surplus);">Raudona spalva:</strong> Personalo perteklius (teigiamas skirtumas)</li>
                 </ul>
             </div>
 
-            <div class="info-box">
-                <h4>📐 Skaičiavimo metodika</h4>
+            <div class="help-card">
+                <h3>👥 Personalo tipų klasifikacija</h3>
                 <ul>
-                    <li><strong>Bazinis FTE skaičiavimas:</strong> Pamainų valandos × Dienos ÷ 40 val/sav × 1.25 (nebuvimo koef.)</li>
-                    <li><strong>24/7 pamainos:</strong> (24h × 7d) ÷ 40h × 1.25 = 5.25 FTE/postui</li>
+                    <li><strong style="color: var(--doctor-color);">Gydytojai:</strong> Medicininis personalas (gydytojai anesteziologai reanimatologai)</li>
+                    <li><strong style="color: var(--nurse-color);">Slaugytojai:</strong> Anestezijos ir intensyviosios terapijos slaugytojai</li>
+                    <li><strong style="color: var(--assistant-color);">Padėjėjai:</strong> Slaugytojų padėjėjai</li>
+                </ul>
+            </div>
+
+            <div class="help-card">
+                <h3>🔢 Skaičiavimo metodika (3 skaitmenų tikslumas)</h3>
+                <ul>
+                    <li><strong>Bazinio FTE formulė:</strong> Pamainų valandos × 7 dienų ÷ 40 val/sav × 1.25</li>
+                    <li><strong>24/7 pamainos:</strong> (24h × 7d) ÷ 40h × 1.25 = 5.250 FTE/postui</li>
                     <li><strong>12/7 pamainos:</strong> (12h × 7d) ÷ 40h × 1.25 = 2.625 FTE/postui</li>
-                    <li><strong>1 FTE = 40 val/sav</strong> standartinis darbo krūvis</li>
+                    <li><strong>12/6 pamainos:</strong> (12h × 6d) ÷ 40h × 1.25 = 2.250 FTE/postui</li>
+                    <li><strong>Visi skaičiavimai:</strong> 3 skaitmenų po kablelio tikslumas</li>
+                </ul>
+            </div>
+
+            <div class="help-card">
+                <h3>📋 Reguliavimo pagrindas</h3>
+                <ul>
+                    <li><strong>Teisinis pagrindas:</strong> LR SAM įsakymas Nr. V-465 (2022-03-02)</li>
+                    <li><strong>Pakeitimų įsakymas:</strong> Nr. V-1213 (2024-12-03)</li>
+                    <li><strong>17 punktas:</strong> Personalo normatyvų reikalavimai</li>
+                    <li><strong>X skyrius:</strong> Papildomo mokėjimo tvarka</li>
                 </ul>
             </div>
         </div>
 
         <!-- Export Section -->
         <div class="export-section">
-            <button class="btn" onclick="exportToCSV()">📊 Eksportuoti CSV</button>
-            <button class="btn btn-secondary" onclick="exportPlanningReport()">📋 Planavimo ataskaita</button>
-            <button class="btn btn-secondary" onclick="saveConfiguration()">💾 Išsaugoti konfigūraciją</button>
-            <button class="btn btn-secondary" onclick="loadConfiguration()">📂 Įkelti konfigūraciją</button>
+            <button class="btn btn-primary" onclick="exportCSV()">📊 Eksportuoti CSV</button>
+            <button class="btn btn-success" onclick="exportReport()">📋 Detalus raportas</button>
+            <button class="btn btn-secondary" onclick="saveConfig()">💾 Išsaugoti konfigūraciją</button>
+            <button class="btn btn-secondary" onclick="loadConfig()">📂 Įkelti konfigūraciją</button>
             <button class="btn btn-secondary" onclick="printReport()">🖨️ Spausdinti</button>
         </div>
     </div>
 
     <script>
-        // Constants
-        const STANDARD_FTE = {
-            '24/7': 5.25,
+        // ==============================================
+        // CONSTANTS AND CONFIGURATION
+        // ==============================================
+        
+        const FTE_STANDARDS = {
+            '24/7': 5.250,
             '12/7': 2.625,
-            '12/6': 2.25,
+            '12/6': 2.250,
             '12/5': 1.875,
             '10/6': 1.875,
-            '8/5': 1.25
+            '8/5': 1.250
         };
 
         const STAFF_TYPES = {
             'Gydytojai': { color: '#3b82f6', icon: '👨‍⚕️' },
             'Slaugytojai': { color: '#8b5cf6', icon: '👩‍⚕️' },
-            'Padėjėjai': { color: '#fb923c', icon: '🤝' }
+            'Padėjėjai': { color: '#f97316', icon: '🤝' }
         };
 
-        // State
+        const PRECISION = 3; // 3 decimal places
+
+        // ==============================================
+        // STATE MANAGEMENT
+        // ==============================================
+        
         let mainUnits = [
             { 
                 name: 'I ITS', 
-                staffType: 'Gydytojai',
+                staffType: 'Gydytojai', 
                 stations: 3, 
                 shiftType: '24/7', 
-                additionalFTE: 1, 
-                manualRequired: null,  // null means use calculated value
-                currentFTE: 18, 
-                nearFutureFTE: 18.5,
-                afterJulyFTE: 20,
+                additionalFTE: 1.000, 
+                manualRequired: null,
+                currentFTE: 18.000, 
+                nearFutureFTE: 18.500, 
+                afterJulyFTE: 20.000, 
                 isCritical: false 
             },
             { 
                 name: 'II ITS', 
-                staffType: 'Slaugytojai',
+                staffType: 'Slaugytojai', 
                 stations: 3, 
                 shiftType: '24/7', 
-                additionalFTE: 1,
+                additionalFTE: 1.000,
                 manualRequired: null,
-                currentFTE: 15.125,
-                nearFutureFTE: 16,
-                afterJulyFTE: 17.5,
+                currentFTE: 15.125, 
+                nearFutureFTE: 16.000, 
+                afterJulyFTE: 17.500, 
                 isCritical: false 
             },
             { 
                 name: 'III ITS', 
-                staffType: 'Gydytojai',
+                staffType: 'Gydytojai', 
                 stations: 2, 
                 shiftType: '24/7', 
-                additionalFTE: 0.75,
-                manualRequired: null, 
-                currentFTE: 11.75,
-                nearFutureFTE: 11.75,
-                afterJulyFTE: 12.5,
+                additionalFTE: 0.750,
+                manualRequired: null,
+                currentFTE: 11.750, 
+                nearFutureFTE: 11.750, 
+                afterJulyFTE: 12.500, 
                 isCritical: false 
             },
             { 
                 name: 'IV ITS', 
-                staffType: 'Padėjėjai',
+                staffType: 'Padėjėjai', 
                 stations: 1, 
                 shiftType: '24/7', 
-                additionalFTE: 0.25,
+                additionalFTE: 0.250,
                 manualRequired: null,
-                currentFTE: 5.5,
-                nearFutureFTE: 5.5,
-                afterJulyFTE: 6,
+                currentFTE: 5.500, 
+                nearFutureFTE: 5.500, 
+                afterJulyFTE: 6.000, 
                 isCritical: false 
             }
         ];
@@ -1174,84 +984,161 @@
         let specUnits = [
             { 
                 name: 'PTP', 
-                staffType: 'Gydytojai',
+                staffType: 'Gydytojai', 
                 stations: 1, 
                 shiftType: '12/6', 
-                additionalFTE: 0.25,
+                additionalFTE: 0.250,
                 manualRequired: null,
-                currentFTE: 3,
-                nearFutureFTE: 3,
-                afterJulyFTE: 3.5,
+                currentFTE: 3.000, 
+                nearFutureFTE: 3.000, 
+                afterJulyFTE: 3.500, 
                 isCritical: false 
             },
             { 
                 name: 'RDPKP', 
-                staffType: 'Slaugytojai',
+                staffType: 'Slaugytojai', 
                 stations: 1, 
                 shiftType: '12/6', 
-                additionalFTE: 0,
+                additionalFTE: 0.000,
                 manualRequired: null,
-                currentFTE: 2,
-                nearFutureFTE: 2.25,
-                afterJulyFTE: 2.5,
+                currentFTE: 2.000, 
+                nearFutureFTE: 2.250, 
+                afterJulyFTE: 2.500, 
                 isCritical: false 
             }
         ];
 
-        // Calculate functions
+        // ==============================================
+        // UTILITY FUNCTIONS
+        // ==============================================
+        
+        function formatNumber(value, decimals = PRECISION) {
+            if (value === null || value === undefined || isNaN(value)) return '0.' + '0'.repeat(decimals);
+            return Number(value).toFixed(decimals);
+        }
+
+        function formatPercentage(value, decimals = 1) {
+            if (value === null || value === undefined || isNaN(value)) return '0.0%';
+            return Number(value).toFixed(decimals) + '%';
+        }
+
+        function isZeroValue(value, threshold = 0.001) {
+            return Math.abs(value) < threshold;
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = { 
+                success: '✅', 
+                error: '❌', 
+                warning: '⚠️', 
+                info: 'ℹ️' 
+            };
+            
+            toast.innerHTML = `${icons[type] || '📄'} ${message}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // ==============================================
+        // CALCULATION FUNCTIONS
+        // ==============================================
+        
         function calculateUnit(unit) {
-            const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
+            const baseFTEPerStation = FTE_STANDARDS[unit.shiftType] || 5.250;
             unit.baseRequired = unit.stations * baseFTEPerStation;
             
-            // Calculate required FTE
+            // Calculate total required FTE
             const calculatedRequired = unit.baseRequired + (unit.additionalFTE || 0);
-            
-            // Use manual override if set, otherwise use calculated value
             unit.totalRequired = unit.manualRequired !== null ? unit.manualRequired : calculatedRequired;
             unit.isManualRequired = unit.manualRequired !== null;
             
+            // Calculate gaps and metrics
             unit.gap = unit.currentFTE - unit.totalRequired;
             unit.gapPercentage = unit.totalRequired > 0 ? (unit.gap / unit.totalRequired) * 100 : 0;
             
+            // Priority calculation
             const weightFactor = unit.isCritical ? 1.5 : 1.0;
             unit.priorityScore = Math.abs(unit.gapPercentage) * weightFactor;
             
+            // Future planning gaps
             unit.nearFutureGap = (unit.nearFutureFTE || unit.currentFTE) - unit.totalRequired;
             unit.afterJulyGap = (unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) - unit.totalRequired;
             
             return unit;
         }
 
-        // Tab switching
+        function calculatePriorities(units) {
+            // Reset priorities
+            units.forEach(unit => unit.priority = null);
+            
+            // Find units with shortages
+            const unitsWithShortages = units.filter(u => u.gap < -0.001);
+            
+            if (unitsWithShortages.length > 0) {
+                // Sort by priority score (descending)
+                const sortedShortages = [...unitsWithShortages].sort((a, b) => b.priorityScore - a.priorityScore);
+                
+                // Assign priorities
+                sortedShortages.forEach((sortedUnit, index) => {
+                    const originalUnit = units.find(u => u === sortedUnit);
+                    if (originalUnit) originalUnit.priority = index + 1;
+                });
+            }
+        }
+
+        // ==============================================
+        // TAB MANAGEMENT
+        // ==============================================
+        
         function switchTab(tabName) {
+            // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
+            // Remove active class from all tabs
             document.querySelectorAll('.tab').forEach(btn => {
                 btn.classList.remove('active');
             });
             
+            // Show selected tab content
             document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Add active class to clicked tab
             event.target.classList.add('active');
             
-            if (tabName === 'planning') {
+            // Special handling for analysis tab
+            if (tabName === 'analysis') {
                 setTimeout(() => {
-                    drawMainDeptChart();
-                    drawSpecDeptChart();
+                    drawChart();
+                    updateAnalysisContent();
                 }, 100);
             }
         }
 
-        // Toggle required field between manual and calculated
+        // ==============================================
+        // MANUAL REQUIRED FIELD TOGGLE
+        // ==============================================
+        
         function toggleRequiredField(prefix, index) {
             const units = prefix === 'main' ? mainUnits : specUnits;
             const unit = units[index];
             
             if (unit.manualRequired === null) {
-                // Switch to manual mode with current calculated value
+                // Switch to manual mode
                 const calculatedValue = unit.baseRequired + (unit.additionalFTE || 0);
-                const newValue = prompt('Įveskite reikalingus FTE:', calculatedValue.toFixed(2));
+                const newValue = prompt('Įveskite reikalingus FTE:', calculatedValue.toFixed(PRECISION));
                 
                 if (newValue !== null && !isNaN(parseFloat(newValue))) {
                     unit.manualRequired = parseFloat(newValue);
@@ -1268,7 +1155,11 @@
             }
         }
 
-        function renderUnits(units, bodyId, prefix) {
+        // ==============================================
+        // TABLE RENDERING
+        // ==============================================
+        
+        function renderUnitsTable(units, bodyId, prefix) {
             const tbody = document.getElementById(bodyId);
             tbody.innerHTML = '';
             
@@ -1279,103 +1170,92 @@
             let totalNearFuture = 0;
             let totalAfterJuly = 0;
             
+            // Calculate all units and priorities
             units.forEach(unit => calculateUnit(unit));
+            calculatePriorities(units);
             
-            const unitsWithShortages = units.filter(u => u.gap < 0);
-            units.forEach(unit => unit.priority = null);
-            
-            if (unitsWithShortages.length > 0) {
-                const sortedShortages = [...unitsWithShortages].sort((a, b) => b.priorityScore - a.priorityScore);
-                sortedShortages.forEach((sortedUnit, index) => {
-                    const originalUnit = units.find(u => u === sortedUnit);
-                    if (originalUnit) originalUnit.priority = index + 1;
-                });
-            }
-            
+            // Render each unit
             units.forEach((unit, index) => {
-                const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
-                const isShortage = unit.gap < 0;
-                const isSurplus = unit.gap > 0;
-                const isZero = Math.abs(unit.gap) < 0.001; // Check if effectively zero
+                const baseFTEPerStation = FTE_STANDARDS[unit.shiftType] || 5.250;
+                const isZeroGap = isZeroValue(unit.gap);
+                const isShortage = unit.gap < -0.001;
+                const isSurplus = unit.gap > 0.001;
+                
+                // Determine gap styling
+                let gapClass = 'gap-zero';
+                if (isShortage) gapClass = 'gap-shortage';
+                else if (isSurplus) gapClass = 'gap-surplus';
+                
+                // Determine staff type class
+                let staffTypeClass = '';
+                if (unit.staffType === 'Gydytojai') staffTypeClass = 'staff-type-doctor';
+                else if (unit.staffType === 'Slaugytojai') staffTypeClass = 'staff-type-nurse';
+                else if (unit.staffType === 'Padėjėjai') staffTypeClass = 'staff-type-assistant';
                 
                 const row = tbody.insertRow();
+                row.className = staffTypeClass;
+                
                 row.innerHTML = `
-                    <td class="col-name">
-                        <input type="text" value="${unit.name}" onchange="updateUnit('${prefix}', ${index}, 'name', this.value)">
+                    <td>
+                        <input type="text" value="${unit.name}" onchange="updateUnit('${prefix}', ${index}, 'name', this.value)" style="border: none; background: transparent; font-weight: 600;">
                     </td>
-                    <td class="col-type">
-                        <select onchange="updateUnit('${prefix}', ${index}, 'staffType', this.value)" 
-                                style="background: ${
-                                    unit.staffType === 'Gydytojai' ? 'rgba(59, 130, 246, 0.1)' : 
-                                    unit.staffType === 'Slaugytojai' ? 'rgba(139, 92, 246, 0.1)' : 
-                                    'rgba(251, 146, 60, 0.1)'
-                                };">
+                    <td>
+                        <select onchange="updateUnit('${prefix}', ${index}, 'staffType', this.value)" style="border: none; background: transparent;">
                             <option value="Gydytojai" ${unit.staffType === 'Gydytojai' ? 'selected' : ''}>Gydytojai</option>
                             <option value="Slaugytojai" ${unit.staffType === 'Slaugytojai' ? 'selected' : ''}>Slaugytojai</option>
                             <option value="Padėjėjai" ${unit.staffType === 'Padėjėjai' ? 'selected' : ''}>Padėjėjai</option>
                         </select>
                     </td>
-                    <td class="col-stations">
-                        <input type="number" value="${unit.stations}" min="0" 
-                               onchange="updateUnit('${prefix}', ${index}, 'stations', this.value)">
+                    <td class="text-center">
+                        <input type="number" value="${unit.stations}" min="0" step="1" onchange="updateUnit('${prefix}', ${index}, 'stations', this.value)" style="border: none; background: transparent; text-align: center;">
                     </td>
-                    <td class="col-shift">
-                        <select onchange="updateUnit('${prefix}', ${index}, 'shiftType', this.value)">
-                            ${Object.keys(STANDARD_FTE).map(pattern => 
+                    <td class="text-center">
+                        <select onchange="updateUnit('${prefix}', ${index}, 'shiftType', this.value)" style="border: none; background: transparent;">
+                            ${Object.keys(FTE_STANDARDS).map(pattern => 
                                 `<option value="${pattern}" ${unit.shiftType === pattern ? 'selected' : ''}>${pattern}</option>`
                             ).join('')}
                         </select>
                     </td>
-                    <td class="col-base" style="color: #60a5fa;">
-                        ${baseFTEPerStation}
+                    <td class="text-center" style="color: var(--info); font-weight: 600;">
+                        ${formatNumber(baseFTEPerStation)}
                     </td>
-                    <td class="col-additional">
-                        <input type="number" value="${unit.additionalFTE}" step="0.25" min="0"
-                               onchange="updateUnit('${prefix}', ${index}, 'additionalFTE', this.value)">
+                    <td class="text-center">
+                        <input type="number" value="${formatNumber(unit.additionalFTE)}" step="0.001" min="0" onchange="updateUnit('${prefix}', ${index}, 'additionalFTE', this.value)" style="border: none; background: transparent; text-align: center;">
                     </td>
-                    <td class="col-required required-cell">
-                        <div class="required-input">
-                            <div class="required-value ${unit.isManualRequired ? 'manual' : 'calculated'}"
-                                 onclick="toggleRequiredField('${prefix}', ${index})"
-                                 title="${unit.isManualRequired ? 'Rankinis įvedimas. Spustelėkite grįžti į automatinį' : 'Automatinis skaičiavimas. Spustelėkite redaguoti'}">
-                                ${unit.totalRequired.toFixed(2)}
-                                ${unit.isManualRequired ? '<span class="manual-indicator">M</span>' : ''}
-                            </div>
+                    <td class="required-cell">
+                        <div class="required-value ${unit.isManualRequired ? 'manual' : 'calculated'}" 
+                             onclick="toggleRequiredField('${prefix}', ${index})"
+                             title="${unit.isManualRequired ? 'Rankinis įvedimas - spustelėkite keisti' : 'Automatinis skaičiavimas - spustelėkite redaguoti'}">
+                            ${formatNumber(unit.totalRequired)}
+                            ${unit.isManualRequired ? '<span class="manual-indicator">M</span>' : ''}
                         </div>
                     </td>
-                    <td class="col-current">
-                        <input type="number" value="${unit.currentFTE}" step="0.125" min="0"
-                               onchange="updateUnit('${prefix}', ${index}, 'currentFTE', this.value)">
+                    <td class="text-center">
+                        <input type="number" value="${formatNumber(unit.currentFTE)}" step="0.001" min="0" onchange="updateUnit('${prefix}', ${index}, 'currentFTE', this.value)" style="border: none; background: transparent; text-align: center;">
                     </td>
-                    <td class="col-near-future">
-                        <input type="number" value="${unit.nearFutureFTE || unit.currentFTE}" step="0.125" min="0"
-                               class="planning-input"
-                               onchange="updateUnit('${prefix}', ${index}, 'nearFutureFTE', this.value)">
+                    <td class="text-center">
+                        <input type="number" value="${formatNumber(unit.nearFutureFTE || unit.currentFTE)}" step="0.001" min="0" class="planning-input" onchange="updateUnit('${prefix}', ${index}, 'nearFutureFTE', this.value)" style="text-align: center;">
                     </td>
-                    <td class="col-after-july">
-                        <input type="number" value="${unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE}" step="0.125" min="0"
-                               class="planning-input"
-                               onchange="updateUnit('${prefix}', ${index}, 'afterJulyFTE', this.value)">
+                    <td class="text-center">
+                        <input type="number" value="${formatNumber(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE)}" step="0.001" min="0" class="planning-input" onchange="updateUnit('${prefix}', ${index}, 'afterJulyFTE', this.value)" style="text-align: center;">
                     </td>
-                    <td class="col-gap">
-                        <span class="gap-badge ${isZero ? 'gap-zero' : (isShortage ? 'gap-shortage' : 'gap-surplus')}">
-                            ${isZero ? '0.00' : ((unit.gap >= 0 ? '+' : '') + unit.gap.toFixed(2))}
+                    <td class="text-center">
+                        <span class="gap-badge ${gapClass}">
+                            ${isZeroGap ? '0.000' : (unit.gap >= 0 ? '+' : '') + formatNumber(unit.gap)}
                         </span>
                     </td>
-                    <td class="col-gap-percent" style="font-weight: 600; color: ${isZero ? '#60a5fa' : (isShortage ? '#f87171' : '#4ade80')};">
-                        ${isZero ? '0.0%' : ((unit.gapPercentage >= 0 ? '+' : '') + unit.gapPercentage.toFixed(1) + '%')}
+                    <td class="text-center" style="color: ${isZeroGap ? 'var(--gap-zero)' : (isShortage ? 'var(--gap-shortage)' : 'var(--gap-surplus)')}; font-weight: 600;">
+                        ${isZeroGap ? '0.0%' : (unit.gapPercentage >= 0 ? '+' : '') + formatPercentage(unit.gapPercentage)}
                     </td>
-                    <td class="col-priority">
-                        ${unit.priority ? 
-                            `<span class="priority-badge priority-${Math.min(unit.priority, 3)}">#${unit.priority}</span>` : 
-                            '-'}
+                    <td class="text-center">
+                        ${unit.priority ? `<span class="priority-badge">#${unit.priority}</span>` : '-'}
                     </td>
-                    <td class="col-critical">
-                        <input type="checkbox" ${unit.isCritical ? 'checked' : ''} 
-                               onchange="updateUnit('${prefix}', ${index}, 'isCritical', this.checked)">
+                    <td class="text-center">
+                        <input type="checkbox" ${unit.isCritical ? 'checked' : ''} onchange="updateUnit('${prefix}', ${index}, 'isCritical', this.checked)">
                     </td>
                 `;
                 
+                // Update totals
                 totalStations += unit.stations;
                 totalAdditional += unit.additionalFTE || 0;
                 totalRequired += unit.totalRequired;
@@ -1384,37 +1264,38 @@
                 totalAfterJuly += unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE;
             });
             
+            // Update totals display
             const totalGap = totalCurrent - totalRequired;
             const totalGapPercent = totalRequired > 0 ? (totalGap / totalRequired) * 100 : 0;
-            const isZeroGap = Math.abs(totalGap) < 0.001;
-            const isZeroPercent = Math.abs(totalGapPercent) < 0.001;
+            const isZeroTotalGap = isZeroValue(totalGap);
             
             document.getElementById(`${prefix}TotalStations`).textContent = totalStations;
-            document.getElementById(`${prefix}TotalAdditional`).textContent = totalAdditional.toFixed(2);
-            document.getElementById(`${prefix}TotalRequired`).textContent = totalRequired.toFixed(2);
-            document.getElementById(`${prefix}TotalCurrent`).textContent = totalCurrent.toFixed(2);
-            document.getElementById(`${prefix}TotalNearFuture`).textContent = totalNearFuture.toFixed(2);
-            document.getElementById(`${prefix}TotalAfterJuly`).textContent = totalAfterJuly.toFixed(2);
+            document.getElementById(`${prefix}TotalAdditional`).textContent = formatNumber(totalAdditional);
+            document.getElementById(`${prefix}TotalRequired`).textContent = formatNumber(totalRequired);
+            document.getElementById(`${prefix}TotalCurrent`).textContent = formatNumber(totalCurrent);
+            document.getElementById(`${prefix}TotalNearFuture`).textContent = formatNumber(totalNearFuture);
+            document.getElementById(`${prefix}TotalAfterJuly`).textContent = formatNumber(totalAfterJuly);
             
             const gapEl = document.getElementById(`${prefix}TotalGap`);
-            gapEl.textContent = isZeroGap ? '0.00' : ((totalGap >= 0 ? '+' : '') + totalGap.toFixed(2));
-            gapEl.style.color = isZeroGap ? '#60a5fa' : (totalGap < 0 ? '#f87171' : '#4ade80');
+            gapEl.textContent = isZeroTotalGap ? '0.000' : (totalGap >= 0 ? '+' : '') + formatNumber(totalGap);
+            gapEl.style.color = isZeroTotalGap ? 'var(--gap-zero)' : (totalGap < 0 ? 'var(--gap-shortage)' : 'var(--gap-surplus)');
             
             const gapPercentEl = document.getElementById(`${prefix}TotalGapPercent`);
-            gapPercentEl.textContent = isZeroPercent ? '0.0%' : ((totalGapPercent >= 0 ? '+' : '') + totalGapPercent.toFixed(1) + '%');
-            gapPercentEl.style.color = isZeroGap ? '#60a5fa' : (totalGap < 0 ? '#f87171' : '#4ade80');
+            gapPercentEl.textContent = isZeroTotalGap ? '0.0%' : (totalGapPercent >= 0 ? '+' : '') + formatPercentage(totalGapPercent);
+            gapPercentEl.style.color = isZeroTotalGap ? 'var(--gap-zero)' : (totalGapPercent < 0 ? 'var(--gap-shortage)' : 'var(--gap-surplus)');
         }
 
+        // ==============================================
+        // DASHBOARD UPDATE
+        // ==============================================
+        
         function updateDashboard() {
             const allUnits = [...mainUnits, ...specUnits];
             
             let totalStations = 0;
             let totalRequired = 0;
             let totalCurrent = 0;
-            let totalNearFuture = 0;
-            let totalAfterJuly = 0;
             let shortageCount = 0;
-            
             let doctorFTE = 0;
             let nurseFTE = 0;
             let assistantFTE = 0;
@@ -1424,378 +1305,35 @@
                 totalStations += unit.stations;
                 totalRequired += unit.totalRequired;
                 totalCurrent += unit.currentFTE;
-                totalNearFuture += unit.nearFutureFTE || unit.currentFTE;
-                totalAfterJuly += unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE;
                 
-                if (unit.gap < 0) shortageCount++;
+                if (unit.gap < -0.001) shortageCount++;
                 
                 // Count by staff type
-                if (unit.staffType === 'Gydytojai') {
-                    doctorFTE += unit.currentFTE;
-                } else if (unit.staffType === 'Slaugytojai') {
-                    nurseFTE += unit.currentFTE;
-                } else if (unit.staffType === 'Padėjėjai') {
-                    assistantFTE += unit.currentFTE;
-                }
+                if (unit.staffType === 'Gydytojai') doctorFTE += unit.currentFTE;
+                else if (unit.staffType === 'Slaugytojai') nurseFTE += unit.currentFTE;
+                else if (unit.staffType === 'Padėjėjai') assistantFTE += unit.currentFTE;
             });
             
-            const currentGap = totalCurrent - totalRequired;
-            const isZeroBalance = Math.abs(currentGap) < 0.001;
+            const currentBalance = totalCurrent - totalRequired;
+            const isZeroBalance = isZeroValue(currentBalance);
             
             document.getElementById('totalUnits').textContent = allUnits.length;
-            document.getElementById('doctorFTE').textContent = doctorFTE.toFixed(2);
-            document.getElementById('nurseFTE').textContent = nurseFTE.toFixed(2);
-            document.getElementById('assistantFTE').textContent = assistantFTE.toFixed(2);
-            document.getElementById('totalRequired').textContent = totalRequired.toFixed(2);
-            document.getElementById('totalCurrent').textContent = totalCurrent.toFixed(2);
+            document.getElementById('doctorFTE').textContent = formatNumber(doctorFTE);
+            document.getElementById('nurseFTE').textContent = formatNumber(nurseFTE);
+            document.getElementById('assistantFTE').textContent = formatNumber(assistantFTE);
+            document.getElementById('totalRequired').textContent = formatNumber(totalRequired);
+            document.getElementById('totalCurrent').textContent = formatNumber(totalCurrent);
             document.getElementById('shortageUnits').textContent = shortageCount;
             
             const balanceEl = document.getElementById('totalBalance');
-            balanceEl.textContent = isZeroBalance ? '0.00' : ((currentGap >= 0 ? '+' : '') + currentGap.toFixed(2));
-            balanceEl.className = isZeroBalance ? 'stat-value neutral' : (currentGap < 0 ? 'stat-value negative' : 'stat-value positive');
+            balanceEl.textContent = isZeroBalance ? '0.000' : (currentBalance >= 0 ? '+' : '') + formatNumber(currentBalance);
+            balanceEl.className = `stat-value ${isZeroBalance ? 'zero' : (currentBalance < 0 ? 'shortage' : 'surplus')}`;
         }
 
-        // Chart Drawing Functions
-        function drawMainDeptChart() {
-            const canvas = document.getElementById('mainDeptChart');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width = 600;
-            const height = canvas.height = 400;
-            
-            ctx.clearRect(0, 0, width, height);
-            
-            // Chart dimensions
-            const padding = { top: 40, right: 60, bottom: 60, left: 80 };
-            const chartWidth = width - padding.left - padding.right;
-            const chartHeight = height - padding.top - padding.bottom;
-            
-            // Calculate max value for scale
-            let maxValue = 0;
-            mainUnits.forEach(unit => {
-                const max = Math.max(
-                    unit.totalRequired,
-                    unit.currentFTE,
-                    unit.nearFutureFTE || 0,
-                    unit.afterJulyFTE || 0
-                );
-                if (max > maxValue) maxValue = max;
-            });
-            maxValue = maxValue * 1.1;
-            
-            // Draw grid
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.lineWidth = 1;
-            
-            for (let i = 0; i <= 5; i++) {
-                const y = padding.top + (chartHeight / 5) * i;
-                ctx.beginPath();
-                ctx.moveTo(padding.left, y);
-                ctx.lineTo(width - padding.right, y);
-                ctx.stroke();
-                
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '11px sans-serif';
-                ctx.textAlign = 'right';
-                const value = maxValue - (maxValue / 5) * i;
-                ctx.fillText(value.toFixed(1), padding.left - 10, y + 4);
-            }
-            
-            // Bar dimensions
-            const groupWidth = chartWidth / mainUnits.length;
-            const barWidth = groupWidth / 4;
-            const barSpacing = barWidth * 0.3;
-            
-            // Draw units
-            mainUnits.forEach((unit, index) => {
-                const x = padding.left + groupWidth * index + groupWidth / 2;
-                const staffColor = STAFF_TYPES[unit.staffType]?.color || '#3b82f6';
-                
-                // Calculate heights
-                const currentHeight = (unit.currentFTE / maxValue) * chartHeight;
-                const nearFutureHeight = ((unit.nearFutureFTE || unit.currentFTE) / maxValue) * chartHeight;
-                const afterJulyHeight = ((unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) / maxValue) * chartHeight;
-                
-                // Draw bars with staff type colors
-                const bars = [
-                    { height: currentHeight, label: 'Turimi' },
-                    { height: nearFutureHeight, label: 'Artimu metu' },
-                    { height: afterJulyHeight, label: 'Po liepos' }
-                ];
-                
-                bars.forEach((bar, barIndex) => {
-                    if (bar.height > 0) {
-                        const barX = x - barWidth * 1.5 + barIndex * (barWidth + barSpacing);
-                        const barY = padding.top + chartHeight - bar.height;
-                        
-                        // Apply staff type color with different opacity for planning periods
-                        const opacity = barIndex === 0 ? 1 : (0.6 - barIndex * 0.15);
-                        ctx.fillStyle = `${staffColor}${Math.floor(opacity * 255).toString(16).padStart(2, '0')}`;
-                        
-                        ctx.fillRect(barX, barY, barWidth, bar.height);
-                        
-                        // Border
-                        ctx.strokeStyle = staffColor;
-                        ctx.lineWidth = barIndex === 0 ? 2 : 1;
-                        ctx.strokeRect(barX, barY, barWidth, bar.height);
-                        
-                        // Display value on top of current bar
-                        if (barIndex === 0) {
-                            ctx.fillStyle = staffColor;
-                            ctx.font = 'bold 11px sans-serif';
-                            ctx.textAlign = 'center';
-                            ctx.fillText(unit.currentFTE.toFixed(1), barX + barWidth / 2, barY - 5);
-                        }
-                    }
-                });
-                
-                // Draw threshold line
-                const requiredHeight = (unit.totalRequired / maxValue) * chartHeight;
-                
-                // Required threshold
-                ctx.strokeStyle = unit.isManualRequired ? '#8b5cf6' : '#dc2626';
-                ctx.lineWidth = 2;
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - requiredHeight);
-                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - requiredHeight);
-                ctx.stroke();
-                ctx.setLineDash([]);
-                
-                // Add "M" indicator for manual required
-                if (unit.isManualRequired) {
-                    ctx.fillStyle = '#8b5cf6';
-                    ctx.font = 'bold 10px sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('M', x + groupWidth * 0.4 + 10, padding.top + chartHeight - requiredHeight + 3);
-                }
-                
-                // Unit name with staff type indicator
-                ctx.fillStyle = '#e2e8f0';
-                ctx.font = 'bold 13px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(unit.name, x, height - 30);
-                
-                // Staff type badge
-                ctx.fillStyle = staffColor;
-                ctx.font = '10px sans-serif';
-                ctx.fillText(unit.staffType, x, height - 15);
-                
-                // Gap indicator
-                const isZeroGap = Math.abs(unit.gap) < 0.001;
-                if (isZeroGap) {
-                    ctx.fillStyle = '#60a5fa';
-                    ctx.font = 'bold 11px sans-serif';
-                    ctx.fillText('0.00', x, height - 45);
-                } else if (unit.gap < 0) {
-                    ctx.fillStyle = '#ef4444';
-                    ctx.font = 'bold 11px sans-serif';
-                    ctx.fillText(`${unit.gap.toFixed(1)}`, x, height - 45);
-                } else {
-                    ctx.fillStyle = '#10b981';
-                    ctx.font = 'bold 11px sans-serif';
-                    ctx.fillText(`+${unit.gap.toFixed(1)}`, x, height - 45);
-                }
-            });
-            
-            // Title
-            ctx.fillStyle = '#e2e8f0';
-            ctx.font = 'bold 14px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('FTE analizė pagal personalo tipus', width / 2, 25);
-            
-            // Y-axis label
-            ctx.save();
-            ctx.translate(20, height / 2);
-            ctx.rotate(-Math.PI / 2);
-            ctx.font = '12px sans-serif';
-            ctx.fillStyle = '#94a3b8';
-            ctx.textAlign = 'center';
-            ctx.fillText('FTE', 0, 0);
-            ctx.restore();
-        }
-
-        function drawSpecDeptChart() {
-            const canvas = document.getElementById('specDeptChart');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width = 600;
-            const height = canvas.height = 400;
-            
-            ctx.clearRect(0, 0, width, height);
-            
-            // Chart dimensions
-            const padding = { top: 40, right: 60, bottom: 60, left: 80 };
-            const chartWidth = width - padding.left - padding.right;
-            const chartHeight = height - padding.top - padding.bottom;
-            
-            // Calculate scale
-            let maxFTE = 0;
-            specUnits.forEach(unit => {
-                const max = Math.max(
-                    unit.totalRequired,
-                    unit.currentFTE,
-                    unit.nearFutureFTE || 0,
-                    unit.afterJulyFTE || 0
-                );
-                if (max > maxFTE) maxFTE = max;
-            });
-            
-            maxFTE = maxFTE * 1.2;
-            
-            // Draw grid
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.lineWidth = 1;
-            
-            for (let i = 0; i <= 5; i++) {
-                const y = padding.top + (chartHeight / 5) * i;
-                ctx.beginPath();
-                ctx.moveTo(padding.left, y);
-                ctx.lineTo(width - padding.right, y);
-                ctx.stroke();
-                
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '11px sans-serif';
-                ctx.textAlign = 'right';
-                const value = maxFTE - (maxFTE / 5) * i;
-                ctx.fillText(value.toFixed(1), padding.left - 10, y + 4);
-            }
-            
-            // Bar dimensions
-            const groupWidth = chartWidth / specUnits.length;
-            const barWidth = groupWidth / 4;
-            const barSpacing = barWidth * 0.3;
-            
-            // Draw units
-            specUnits.forEach((unit, index) => {
-                const x = padding.left + groupWidth * index + groupWidth / 2;
-                const staffColor = STAFF_TYPES[unit.staffType]?.color || '#3b82f6';
-                
-                // Calculate heights
-                const currentHeight = (unit.currentFTE / maxFTE) * chartHeight;
-                const nearFutureHeight = ((unit.nearFutureFTE || unit.currentFTE) / maxFTE) * chartHeight;
-                const afterJulyHeight = ((unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) / maxFTE) * chartHeight;
-                
-                // Draw bars
-                const bars = [
-                    { height: currentHeight, label: 'Turimi' },
-                    { height: nearFutureHeight, label: 'Artimu metu' },
-                    { height: afterJulyHeight, label: 'Po liepos' }
-                ];
-                
-                bars.forEach((bar, barIndex) => {
-                    const barX = x - barWidth * 1.5 + barIndex * (barWidth + barSpacing);
-                    const barY = padding.top + chartHeight - bar.height;
-                    
-                    // Apply staff type color
-                    const opacity = barIndex === 0 ? 1 : (0.6 - barIndex * 0.15);
-                    ctx.fillStyle = `${staffColor}${Math.floor(opacity * 255).toString(16).padStart(2, '0')}`;
-                    
-                    ctx.fillRect(barX, barY, barWidth, bar.height);
-                    
-                    // Border
-                    ctx.strokeStyle = staffColor;
-                    ctx.lineWidth = barIndex === 0 ? 2 : 1;
-                    ctx.strokeRect(barX, barY, barWidth, bar.height);
-                    
-                    // Display value
-                    if (barIndex === 0) {
-                        ctx.fillStyle = staffColor;
-                        ctx.font = 'bold 11px sans-serif';
-                        ctx.textAlign = 'center';
-                        ctx.fillText(unit.currentFTE.toFixed(1), barX + barWidth / 2, barY - 5);
-                    }
-                });
-                
-                // Draw requirement zones
-                const requiredHeight = (unit.totalRequired / maxFTE) * chartHeight;
-                
-                // Highlight gap area only if not zero
-                const isZeroGap = Math.abs(unit.gap) < 0.001;
-                if (!isZeroGap && unit.gap < 0) {
-                    const gapY = padding.top + chartHeight - requiredHeight;
-                    const gapHeight = requiredHeight - currentHeight;
-                    
-                    ctx.fillStyle = 'rgba(239, 68, 68, 0.1)';
-                    ctx.fillRect(x - groupWidth * 0.4, gapY, groupWidth * 0.8, gapHeight);
-                }
-                
-                // Required threshold
-                ctx.strokeStyle = unit.isManualRequired ? '#8b5cf6' : '#dc2626';
-                ctx.lineWidth = 3;
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - requiredHeight);
-                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - requiredHeight);
-                ctx.stroke();
-                ctx.setLineDash([]);
-                
-                // Add "M" indicator for manual required
-                if (unit.isManualRequired) {
-                    ctx.fillStyle = '#8b5cf6';
-                    ctx.font = 'bold 10px sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('M', x + groupWidth * 0.4 + 10, padding.top + chartHeight - requiredHeight + 3);
-                }
-                
-                // Unit name
-                ctx.fillStyle = '#e2e8f0';
-                ctx.font = 'bold 13px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(unit.name, x, height - 30);
-                
-                // Staff type
-                ctx.fillStyle = staffColor;
-                ctx.font = '10px sans-serif';
-                ctx.fillText(unit.staffType, x, height - 15);
-                
-                // Gap value
-                ctx.font = 'bold 14px sans-serif';
-                if (isZeroGap) {
-                    ctx.fillStyle = '#60a5fa';
-                    ctx.fillText('Gap: 0.0', x, height - 45);
-                } else if (unit.gap < 0) {
-                    ctx.fillStyle = '#ef4444';
-                    ctx.fillText(`Gap: ${unit.gap.toFixed(1)}`, x, height - 45);
-                } else {
-                    ctx.fillStyle = '#10b981';
-                    ctx.fillText(`+${unit.gap.toFixed(1)}`, x, height - 45);
-                }
-            });
-            
-            // Title
-            ctx.fillStyle = '#e2e8f0';
-            ctx.font = 'bold 14px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('Gap analizė - Specializuoti skyriai', width / 2, 25);
-            
-            // Y-axis label
-            ctx.save();
-            ctx.translate(20, height / 2);
-            ctx.rotate(-Math.PI / 2);
-            ctx.font = '12px sans-serif';
-            ctx.fillStyle = '#94a3b8';
-            ctx.textAlign = 'center';
-            ctx.fillText('FTE', 0, 0);
-            ctx.restore();
-        }
-
-        function updateAll() {
-            renderUnits(mainUnits, 'mainUnitsBody', 'main');
-            renderUnits(specUnits, 'specUnitsBody', 'spec');
-            updateDashboard();
-            
-            if (document.getElementById('planning-tab').classList.contains('active')) {
-                setTimeout(() => {
-                    drawMainDeptChart();
-                    drawSpecDeptChart();
-                }, 100);
-            }
-        }
-
-        // Update unit
+        // ==============================================
+        // UNIT MANAGEMENT FUNCTIONS
+        // ==============================================
+        
         function updateUnit(prefix, index, field, value) {
             const units = prefix === 'main' ? mainUnits : specUnits;
             
@@ -1807,28 +1345,23 @@
                 units[index][field] = parseFloat(value) || 0;
             }
             
-            // If stations, shift, or additional FTE change, and we're in manual mode, 
-            // user might want to recalculate
-            if (['stations', 'shiftType', 'additionalFTE'].includes(field) && units[index].manualRequired !== null) {
-                // Keep manual value, but user can switch back to calculated if needed
-            }
-            
             updateAll();
         }
 
-        // Add/Remove units
         function addMainUnit() {
             const newUnitNumber = mainUnits.length + 1;
+            const romanNumerals = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+            
             mainUnits.push({
-                name: newUnitNumber <= 4 ? `${['I', 'II', 'III', 'IV', 'V'][newUnitNumber - 1]} ITS` : `${newUnitNumber} ITS`,
+                name: newUnitNumber <= 10 ? `${romanNumerals[newUnitNumber]} ITS` : `${newUnitNumber} ITS`,
                 staffType: 'Gydytojai',
                 stations: 1,
                 shiftType: '24/7',
-                additionalFTE: 0,
+                additionalFTE: 0.000,
                 manualRequired: null,
-                currentFTE: 0,
-                nearFutureFTE: 0,
-                afterJulyFTE: 0,
+                currentFTE: 0.000,
+                nearFutureFTE: 0.000,
+                afterJulyFTE: 0.000,
                 isCritical: false
             });
             updateAll();
@@ -1847,15 +1380,15 @@
 
         function addSpecUnit() {
             specUnits.push({
-                name: 'Spec ' + (specUnits.length + 1),
+                name: `Spec ${specUnits.length + 1}`,
                 staffType: 'Gydytojai',
                 stations: 1,
                 shiftType: '12/6',
-                additionalFTE: 0,
+                additionalFTE: 0.000,
                 manualRequired: null,
-                currentFTE: 0,
-                nearFutureFTE: 0,
-                afterJulyFTE: 0,
+                currentFTE: 0.000,
+                nearFutureFTE: 0.000,
+                afterJulyFTE: 0.000,
                 isCritical: false
             });
             updateAll();
@@ -1872,97 +1405,284 @@
             }
         }
 
-        // Clear manual overrides
-        function clearMainManual() {
-            mainUnits.forEach(unit => {
-                unit.manualRequired = null;
-            });
-            updateAll();
-            showToast('🔢 Išvalyti rankiniai REIKIA įvedimai', 'success');
+        // ==============================================
+        // CONFIGURATION FUNCTIONS
+        // ==============================================
+        
+        function resetMainDefaults() {
+            if (confirm('Atkurti pagrindinių skyrių numatytuosius nustatymus?')) {
+                mainUnits = [
+                    { name: 'I ITS', staffType: 'Gydytojai', stations: 3, shiftType: '24/7', additionalFTE: 1.000, manualRequired: null, currentFTE: 18.000, nearFutureFTE: 18.500, afterJulyFTE: 20.000, isCritical: false },
+                    { name: 'II ITS', staffType: 'Slaugytojai', stations: 3, shiftType: '24/7', additionalFTE: 1.000, manualRequired: null, currentFTE: 15.125, nearFutureFTE: 16.000, afterJulyFTE: 17.500, isCritical: false },
+                    { name: 'III ITS', staffType: 'Gydytojai', stations: 2, shiftType: '24/7', additionalFTE: 0.750, manualRequired: null, currentFTE: 11.750, nearFutureFTE: 11.750, afterJulyFTE: 12.500, isCritical: false },
+                    { name: 'IV ITS', staffType: 'Padėjėjai', stations: 1, shiftType: '24/7', additionalFTE: 0.250, manualRequired: null, currentFTE: 5.500, nearFutureFTE: 5.500, afterJulyFTE: 6.000, isCritical: false }
+                ];
+                updateAll();
+                showToast('🔄 Atkurti numatytieji nustatymai', 'success');
+            }
         }
 
-        function clearSpecManual() {
-            specUnits.forEach(unit => {
-                unit.manualRequired = null;
-            });
-            updateAll();
-            showToast('🔢 Išvalyti rankiniai REIKIA įvedimai', 'success');
-        }
-
-        // Auto configure
-        function autoConfigureMain() {
-            mainUnits.forEach(unit => {
-                unit.additionalFTE = Math.max(0, Math.floor(unit.stations * 0.33 * 4) / 4);
-            });
-            updateAll();
-            showToast('Pagrindiniams skyriams pritaikyta išmani konfigūracija', 'success');
-        }
-
-        function autoConfigureSpec() {
-            specUnits.forEach(unit => {
-                unit.additionalFTE = unit.stations > 2 ? 0.5 : 0.25;
-            });
-            updateAll();
-            showToast('Specializuotiems skyriams pritaikyta išmani konfigūracija', 'success');
-        }
-
-        // Reset functions
-        function resetMainToDefaults() {
-            if (!confirm('Atkurti pagrindinių skyrių numatytuosius nustatymus?')) return;
-            
-            mainUnits = [
-                { name: 'I ITS', staffType: 'Gydytojai', stations: 3, shiftType: '24/7', additionalFTE: 1, manualRequired: null, currentFTE: 18, nearFutureFTE: 18.5, afterJulyFTE: 20, isCritical: false },
-                { name: 'II ITS', staffType: 'Slaugytojai', stations: 3, shiftType: '24/7', additionalFTE: 1, manualRequired: null, currentFTE: 15.125, nearFutureFTE: 16, afterJulyFTE: 17.5, isCritical: false },
-                { name: 'III ITS', staffType: 'Gydytojai', stations: 2, shiftType: '24/7', additionalFTE: 0.75, manualRequired: null, currentFTE: 11.75, nearFutureFTE: 11.75, afterJulyFTE: 12.5, isCritical: false },
-                { name: 'IV ITS', staffType: 'Padėjėjai', stations: 1, shiftType: '24/7', additionalFTE: 0.25, manualRequired: null, currentFTE: 5.5, nearFutureFTE: 5.5, afterJulyFTE: 6, isCritical: false }
-            ];
-            updateAll();
-            showToast('🔄 Atkurti numatytieji nustatymai', 'success');
-        }
-
-        function resetSpecToDefaults() {
-            if (!confirm('Atkurti specializuotų skyrių numatytuosius nustatymus?')) return;
-            
-            specUnits = [
-                { name: 'PTP', staffType: 'Gydytojai', stations: 1, shiftType: '12/6', additionalFTE: 0.25, manualRequired: null, currentFTE: 3, nearFutureFTE: 3, afterJulyFTE: 3.5, isCritical: false },
-                { name: 'RDPKP', staffType: 'Slaugytojai', stations: 1, shiftType: '12/6', additionalFTE: 0, manualRequired: null, currentFTE: 2, nearFutureFTE: 2.25, afterJulyFTE: 2.5, isCritical: false }
-            ];
-            updateAll();
-            showToast('🔄 Atkurti numatytieji nustatymai', 'success');
+        function resetSpecDefaults() {
+            if (confirm('Atkurti specializuotų skyrių numatytuosius nustatymus?')) {
+                specUnits = [
+                    { name: 'PTP', staffType: 'Gydytojai', stations: 1, shiftType: '12/6', additionalFTE: 0.250, manualRequired: null, currentFTE: 3.000, nearFutureFTE: 3.000, afterJulyFTE: 3.500, isCritical: false },
+                    { name: 'RDPKP', staffType: 'Slaugytojai', stations: 1, shiftType: '12/6', additionalFTE: 0.000, manualRequired: null, currentFTE: 2.000, nearFutureFTE: 2.250, afterJulyFTE: 2.500, isCritical: false }
+                ];
+                updateAll();
+                showToast('🔄 Atkurti numatytieji nustatymai', 'success');
+            }
         }
 
         function clearMainAdditional() {
-            mainUnits.forEach(unit => {
-                unit.additionalFTE = 0;
-            });
+            mainUnits.forEach(unit => unit.additionalFTE = 0.000);
             updateAll();
             showToast('🧹 Išvalyti papildomi FTE', 'success');
         }
 
         function clearSpecAdditional() {
-            specUnits.forEach(unit => {
-                unit.additionalFTE = 0;
-            });
+            specUnits.forEach(unit => unit.additionalFTE = 0.000);
             updateAll();
             showToast('🧹 Išvalyti papildomi FTE', 'success');
         }
 
-        // Export functions
-        function exportToCSV() {
-            let csv = 'ITU Personalo Ataskaita v5.0\n';
+        function clearMainManual() {
+            mainUnits.forEach(unit => unit.manualRequired = null);
+            updateAll();
+            showToast('🔢 Išvalyti rankiniai REIKIA įvedimai', 'success');
+        }
+
+        function clearSpecManual() {
+            specUnits.forEach(unit => unit.manualRequired = null);
+            updateAll();
+            showToast('🔢 Išvalyti rankiniai REIKIA įvedimai', 'success');
+        }
+
+        function autoConfigureMain() {
+            mainUnits.forEach(unit => {
+                unit.additionalFTE = Math.max(0, Math.round(unit.stations * 0.333 * 1000) / 1000);
+            });
+            updateAll();
+            showToast('🤖 Pagrindiniams skyriams pritaikyta išmani konfigūracija', 'success');
+        }
+
+        function autoConfigureSpec() {
+            specUnits.forEach(unit => {
+                unit.additionalFTE = unit.stations > 2 ? 0.500 : 0.250;
+            });
+            updateAll();
+            showToast('🤖 Specializuotiems skyriams pritaikyta išmani konfigūracija', 'success');
+        }
+
+        // ==============================================
+        // CHART FUNCTIONS
+        // ==============================================
+        
+        function drawChart() {
+            const canvas = document.getElementById('staffChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 800;
+            const height = canvas.height = 400;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            const allUnits = [...mainUnits, ...specUnits].map(unit => {
+                calculateUnit(unit);
+                return unit;
+            });
+            
+            if (allUnits.length === 0) return;
+            
+            // Chart configuration
+            const padding = { top: 40, right: 60, bottom: 80, left: 80 };
+            const chartWidth = width - padding.left - padding.right;
+            const chartHeight = height - padding.top - padding.bottom;
+            
+            // Find max value for scale
+            let maxValue = 0;
+            allUnits.forEach(unit => {
+                const max = Math.max(unit.totalRequired, unit.currentFTE, unit.nearFutureFTE || 0, unit.afterJulyFTE || 0);
+                if (max > maxValue) maxValue = max;
+            });
+            maxValue = maxValue * 1.1;
+            
+            // Draw grid
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding.top + (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding.left, y);
+                ctx.lineTo(width - padding.right, y);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#64748b';
+                ctx.font = '10px sans-serif';
+                ctx.textAlign = 'right';
+                const value = maxValue - (maxValue / 5) * i;
+                ctx.fillText(value.toFixed(1), padding.left - 10, y + 4);
+            }
+            
+            // Draw bars
+            const barWidth = chartWidth / allUnits.length / 4;
+            const groupWidth = chartWidth / allUnits.length;
+            
+            allUnits.forEach((unit, index) => {
+                const x = padding.left + groupWidth * index + groupWidth / 2;
+                const staffColor = STAFF_TYPES[unit.staffType]?.color || '#3b82f6';
+                
+                // Bar heights
+                const currentHeight = (unit.currentFTE / maxValue) * chartHeight;
+                const requiredHeight = (unit.totalRequired / maxValue) * chartHeight;
+                const nearFutureHeight = ((unit.nearFutureFTE || unit.currentFTE) / maxValue) * chartHeight;
+                const afterJulyHeight = ((unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE) / maxValue) * chartHeight;
+                
+                // Draw current FTE bar
+                const currentBarX = x - barWidth * 1.5;
+                const currentBarY = padding.top + chartHeight - currentHeight;
+                
+                ctx.fillStyle = staffColor;
+                ctx.fillRect(currentBarX, currentBarY, barWidth, currentHeight);
+                
+                // Draw required line
+                ctx.strokeStyle = unit.isManualRequired ? '#8b5cf6' : '#dc2626';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(x - groupWidth * 0.4, padding.top + chartHeight - requiredHeight);
+                ctx.lineTo(x + groupWidth * 0.4, padding.top + chartHeight - requiredHeight);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Future planning bars (lighter colors)
+                ctx.fillStyle = staffColor + '80';
+                const nearFutureBarX = x - barWidth * 0.5;
+                const nearFutureBarY = padding.top + chartHeight - nearFutureHeight;
+                ctx.fillRect(nearFutureBarX, nearFutureBarY, barWidth, nearFutureHeight);
+                
+                ctx.fillStyle = staffColor + '60';
+                const afterJulyBarX = x + barWidth * 0.5;
+                const afterJulyBarY = padding.top + chartHeight - afterJulyHeight;
+                ctx.fillRect(afterJulyBarX, afterJulyBarY, barWidth, afterJulyHeight);
+                
+                // Unit labels
+                ctx.fillStyle = '#1e293b';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(unit.name, x, height - 50);
+                
+                // Staff type
+                ctx.fillStyle = staffColor;
+                ctx.font = '9px sans-serif';
+                ctx.fillText(unit.staffType, x, height - 35);
+                
+                // Gap value
+                const isZeroGap = isZeroValue(unit.gap);
+                ctx.font = 'bold 10px sans-serif';
+                if (isZeroGap) {
+                    ctx.fillStyle = '#10b981';
+                    ctx.fillText('0.000', x, height - 20);
+                } else if (unit.gap < 0) {
+                    ctx.fillStyle = '#3b82f6';
+                    ctx.fillText(unit.gap.toFixed(3), x, height - 20);
+                } else {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.fillText(`+${unit.gap.toFixed(3)}`, x, height - 20);
+                }
+            });
+            
+            // Chart title
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Personalo analizė pagal skyrius', width / 2, 25);
+            
+            // Y-axis label
+            ctx.save();
+            ctx.translate(20, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.font = '12px sans-serif';
+            ctx.fillStyle = '#64748b';
+            ctx.textAlign = 'center';
+            ctx.fillText('FTE', 0, 0);
+            ctx.restore();
+        }
+
+        function updateAnalysisContent() {
+            const allUnits = [...mainUnits, ...specUnits];
+            const content = document.getElementById('analysisContent');
+            
+            if (allUnits.length === 0) {
+                content.innerHTML = '<p class="text-center text-sm" style="color: var(--gray);">Nėra duomenų analizei</p>';
+                return;
+            }
+            
+            allUnits.forEach(unit => calculateUnit(unit));
+            calculatePriorities(allUnits);
+            
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">';
+            
+            // By staff type analysis
+            const byStaffType = {
+                'Gydytojai': [],
+                'Slaugytojai': [],
+                'Padėjėjai': []
+            };
+            
+            allUnits.forEach(unit => {
+                if (byStaffType[unit.staffType]) {
+                    byStaffType[unit.staffType].push(unit);
+                }
+            });
+            
+            Object.entries(byStaffType).forEach(([type, units]) => {
+                if (units.length > 0) {
+                    const totalRequired = units.reduce((sum, u) => sum + u.totalRequired, 0);
+                    const totalCurrent = units.reduce((sum, u) => sum + u.currentFTE, 0);
+                    const gap = totalCurrent - totalRequired;
+                    const isZeroGap = isZeroValue(gap);
+                    
+                    html += `
+                        <div class="help-card">
+                            <h3>${STAFF_TYPES[type]?.icon || '👥'} ${type}</h3>
+                            <p><strong>Skyrių skaičius:</strong> ${units.length}</p>
+                            <p><strong>Reikalingi FTE:</strong> ${formatNumber(totalRequired)}</p>
+                            <p><strong>Turimi FTE:</strong> ${formatNumber(totalCurrent)}</p>
+                            <p><strong>Balansas:</strong> 
+                                <span style="color: ${isZeroGap ? 'var(--gap-zero)' : (gap < 0 ? 'var(--gap-shortage)' : 'var(--gap-surplus)')}; font-weight: 600;">
+                                    ${isZeroGap ? '0.000' : (gap >= 0 ? '+' : '') + formatNumber(gap)}
+                                </span>
+                            </p>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        // ==============================================
+        // EXPORT FUNCTIONS
+        // ==============================================
+        
+        function exportCSV() {
+            let csv = 'ITU Personalo Ataskaita v5.1\n';
             csv += `Data: ${new Date().toLocaleString('lt-LT')}\n\n`;
             
             csv += 'PAGRINDINIAI ITS SKYRIAI\n';
             csv += 'Skyrius,Tipas,Postai,Pamaina,Bazė FTE,Papild.,Reikia,Rankinis,Turimi,Artimu metu,Po liepos,Skirtumas,Gap %,Prioritetas,Kritinis\n';
             
             mainUnits.forEach(unit => {
-                const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
-                csv += `${unit.name},${unit.staffType},${unit.stations},${unit.shiftType},${baseFTEPerStation},`;
-                csv += `${unit.additionalFTE.toFixed(2)},${unit.totalRequired.toFixed(2)},`;
+                calculateUnit(unit);
+                const baseFTE = FTE_STANDARDS[unit.shiftType] || 5.250;
+                csv += `${unit.name},${unit.staffType},${unit.stations},${unit.shiftType},${formatNumber(baseFTE)},`;
+                csv += `${formatNumber(unit.additionalFTE)},${formatNumber(unit.totalRequired)},`;
                 csv += `${unit.isManualRequired ? 'Taip' : 'Ne'},`;
-                csv += `${unit.currentFTE.toFixed(2)},${(unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
-                csv += `${(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
-                csv += `${unit.gap.toFixed(2)},${unit.gapPercentage.toFixed(1)}%,`;
+                csv += `${formatNumber(unit.currentFTE)},${formatNumber(unit.nearFutureFTE || unit.currentFTE)},`;
+                csv += `${formatNumber(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE)},`;
+                csv += `${formatNumber(unit.gap)},${formatPercentage(unit.gapPercentage)},`;
                 csv += `${unit.priority || '-'},${unit.isCritical ? 'Taip' : 'Ne'}\n`;
             });
             
@@ -1970,13 +1690,14 @@
             csv += 'Skyrius,Tipas,Postai,Pamaina,Bazė FTE,Papild.,Reikia,Rankinis,Turimi,Artimu metu,Po liepos,Skirtumas,Gap %,Prioritetas,Kritinis\n';
             
             specUnits.forEach(unit => {
-                const baseFTEPerStation = STANDARD_FTE[unit.shiftType] || 5.25;
-                csv += `${unit.name},${unit.staffType},${unit.stations},${unit.shiftType},${baseFTEPerStation},`;
-                csv += `${unit.additionalFTE.toFixed(2)},${unit.totalRequired.toFixed(2)},`;
+                calculateUnit(unit);
+                const baseFTE = FTE_STANDARDS[unit.shiftType] || 5.250;
+                csv += `${unit.name},${unit.staffType},${unit.stations},${unit.shiftType},${formatNumber(baseFTE)},`;
+                csv += `${formatNumber(unit.additionalFTE)},${formatNumber(unit.totalRequired)},`;
                 csv += `${unit.isManualRequired ? 'Taip' : 'Ne'},`;
-                csv += `${unit.currentFTE.toFixed(2)},${(unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
-                csv += `${(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE).toFixed(2)},`;
-                csv += `${unit.gap.toFixed(2)},${unit.gapPercentage.toFixed(1)}%,`;
+                csv += `${formatNumber(unit.currentFTE)},${formatNumber(unit.nearFutureFTE || unit.currentFTE)},`;
+                csv += `${formatNumber(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE)},`;
+                csv += `${formatNumber(unit.gap)},${formatPercentage(unit.gapPercentage)},`;
                 csv += `${unit.priority || '-'},${unit.isCritical ? 'Taip' : 'Ne'}\n`;
             });
             
@@ -1984,45 +1705,39 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ITU_personalo_planas_v5_${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = `ITU_personalo_ataskaita_v5.1_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             URL.revokeObjectURL(url);
             
             showToast('📊 CSV ataskaita eksportuota', 'success');
         }
 
-        function exportPlanningReport() {
-            let report = `ITU PERSONALO PLANAVIMO ATASKAITA v5.0\n`;
+        function exportReport() {
+            let report = `ITU PERSONALO PLANAVIMO ATASKAITA v5.1\n`;
             report += `Sugeneruota: ${new Date().toLocaleString('lt-LT')}\n`;
             report += `${'='.repeat(60)}\n\n`;
             
             const allUnits = [...mainUnits, ...specUnits];
+            allUnits.forEach(unit => calculateUnit(unit));
             
             // Group by staff type
-            const byType = {
-                'Gydytojai': [],
-                'Slaugytojai': [],
-                'Padėjėjai': []
-            };
-            
+            const byType = { 'Gydytojai': [], 'Slaugytojai': [], 'Padėjėjai': [] };
             allUnits.forEach(unit => {
-                if (byType[unit.staffType]) {
-                    byType[unit.staffType].push(unit);
-                }
+                if (byType[unit.staffType]) byType[unit.staffType].push(unit);
             });
             
-            Object.keys(byType).forEach(type => {
-                if (byType[type].length > 0) {
+            Object.entries(byType).forEach(([type, units]) => {
+                if (units.length > 0) {
                     report += `\n${type.toUpperCase()}\n`;
-                    report += `${'-'.repeat(40)}\n`;
+                    report += `${'-'.repeat(50)}\n`;
                     
-                    byType[type].forEach(unit => {
+                    units.forEach(unit => {
                         report += `${unit.name}:\n`;
                         report += `   Postai: ${unit.stations}, Pamaina: ${unit.shiftType}\n`;
-                        report += `   Reikalingi FTE: ${unit.totalRequired.toFixed(2)} ${unit.isManualRequired ? '(Rankinis)' : '(Apskaičiuotas)'}\n`;
-                        report += `   Dabartiniai FTE: ${unit.currentFTE.toFixed(2)}\n`;
-                        report += `   Skirtumas: ${unit.gap.toFixed(2)} (${unit.gapPercentage.toFixed(1)}%)\n`;
-                        report += `   Planavimas: ${(unit.nearFutureFTE || unit.currentFTE).toFixed(2)} → ${(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE).toFixed(2)}\n\n`;
+                        report += `   Reikalingi FTE: ${formatNumber(unit.totalRequired)} ${unit.isManualRequired ? '(Rankinis)' : '(Automatinis)'}\n`;
+                        report += `   Dabartiniai FTE: ${formatNumber(unit.currentFTE)}\n`;
+                        report += `   Skirtumas: ${formatNumber(unit.gap)} (${formatPercentage(unit.gapPercentage)})\n`;
+                        report += `   Planavimas: ${formatNumber(unit.nearFutureFTE || unit.currentFTE)} → ${formatNumber(unit.afterJulyFTE || unit.nearFutureFTE || unit.currentFTE)}\n\n`;
                     });
                 }
             });
@@ -2031,16 +1746,17 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `planavimo_ataskaita_v5_${new Date().toISOString().split('T')[0]}.txt`;
+            a.download = `ITU_planavimo_ataskaita_v5.1_${new Date().toISOString().split('T')[0]}.txt`;
             a.click();
             URL.revokeObjectURL(url);
             
-            showToast('📋 Planavimo ataskaita eksportuota', 'success');
+            showToast('📋 Detalus raportas eksportuotas', 'success');
         }
 
-        function saveConfiguration() {
+        function saveConfig() {
             const config = {
-                version: '5.0',
+                version: '5.1',
+                timestamp: new Date().toISOString(),
                 mainUnits: mainUnits,
                 specUnits: specUnits
             };
@@ -2049,14 +1765,14 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ITU_config_v5_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `ITU_konfiguracija_v5.1_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
             
             showToast('💾 Konfigūracija išsaugota', 'success');
         }
 
-        function loadConfiguration() {
+        function loadConfig() {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = '.json';
@@ -2069,16 +1785,11 @@
                     try {
                         const config = JSON.parse(event.target.result);
                         
-                        if (config.mainUnits) {
-                            mainUnits = config.mainUnits;
-                        }
-                        
-                        if (config.specUnits) {
-                            specUnits = config.specUnits;
-                        }
+                        if (config.mainUnits) mainUnits = config.mainUnits;
+                        if (config.specUnits) specUnits = config.specUnits;
                         
                         updateAll();
-                        showToast('📂 Konfigūracija įkelta', 'success');
+                        showToast('📂 Konfigūracija įkelta sėkmingai', 'success');
                     } catch (error) {
                         showToast('❌ Klaida įkeliant konfigūraciją', 'error');
                     }
@@ -2092,35 +1803,26 @@
             window.print();
         }
 
-        // Toast notification
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            const icon = {
-                'info': 'ℹ️',
-                'success': '✅',
-                'warning': '⚠️',
-                'error': '❌'
-            }[type] || 'ℹ️';
-            
-            toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(100px) scale(0.9)';
-                setTimeout(() => document.body.removeChild(toast), 300);
-            }, 3000);
+        // ==============================================
+        // MAIN UPDATE FUNCTION
+        // ==============================================
+        
+        function updateAll() {
+            renderUnitsTable(mainUnits, 'mainUnitsBody', 'main');
+            renderUnitsTable(specUnits, 'specUnitsBody', 'spec');
+            updateDashboard();
         }
 
-        // Initialize
+        // ==============================================
+        // INITIALIZATION
+        // ==============================================
+        
         document.addEventListener('DOMContentLoaded', function() {
             updateAll();
-            showToast('🚀 ITU Personalo Skaičiuoklė v5.0 paruošta', 'info');
+            showToast('🚀 ITU Personalo Skaičiuoklė v5.1 paruošta - 3 skaitmenų tikslumas!', 'success');
         });
 
-        // Also run immediately if DOM is already loaded
+        // Run immediately if DOM is already loaded
         if (document.readyState !== 'loading') {
             updateAll();
         }
